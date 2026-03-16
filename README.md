@@ -92,10 +92,10 @@
 
 | 서비스 | 담당자 | 핵심 기능 |
 |---|---|---|
-| Auth Service | 정진호 | JWT 발급/검증, RBAC 권한 관리, 담당자 변경 시 권한 이관 |
-| Master Service | 정진호 | 거래처/품목 CRUD, 코드 테이블 관리, 거래처 연락망 관리 |
-| Document Service | 강성훈 | 생산/출하 지시서 자동 생성, CI/PL 자동 생성 |
-| Activity Service | 박찬진 | 출하/판매 현황 관리, 거래처별 정보 페이지, 활동기록 패키지 |
+| Auth Service | 정진호 | JWT 발급/검증, RBAC 권한 관리, 담당자 변경 시 권한 이관, 사용자 관리 |
+| Master Service | 정진호 | 거래처/품목 CRUD, 통화/국가/항구 정보  |
+| Document Service | 강성훈 | PI/PO CRUD, 생산/출하 지시서 자동 생성, CI/PL 자동 생성, 출하/수금 현황 관리 |
+| Activity Service | 박찬진 |  활동기록 ,활동기록 패키지, 거래처 연락망 관리, 메일 이력 관리 |
 
 ### 공통 역할
 
