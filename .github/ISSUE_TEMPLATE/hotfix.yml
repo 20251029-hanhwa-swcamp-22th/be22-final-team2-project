@@ -1,0 +1,51 @@
+name: "🚑 긴급 수정 (Hotfix)"
+description: "운영 환경에서 긴급하게 수정이 필요할 때 사용합니다."
+title: "[Hotfix] "
+labels: ["hotfix"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 긴급 수정
+        운영 환경에서 발생한 긴급 이슈에 대해 작성해주세요.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 문제 설명
+      description: 어떤 문제가 발생했는지 설명해주세요.
+      placeholder: "ex) 운영 서버에서 결제 API 500 에러가 발생하고 있습니다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: 영향 범위
+      description: 이 문제로 인해 어떤 영향이 있나요?
+      placeholder: "ex) 전체 사용자의 결제 기능이 불가능한 상태입니다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: 수정 내용
+      description: 어떻게 수정할 예정인지 작성해주세요.
+      placeholder: "ex) NullPointerException 발생 지점에 null 체크 추가"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: 도메인
+      options:
+        - Auth
+        - Master
+        - Document
+        - Activity
+        - Frontend
+        - Infra
+    validations:
+      required: true
