@@ -13,3 +13,6 @@
 [submodule "team2-manifest"]
 	path = team2-manifest
 	url = https://github.com/hanhwa-swcamp-22th-final/team2-manifest.git
+[submodule "team2-backend-activity"]
+	path = team2-backend-activity
+	url = https://github.com/hanhwa-swcamp-22th-final/team2-backend-activity.git
