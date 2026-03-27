@@ -1,3 +1,15 @@
 [submodule "team2-frontend"]
 	path = team2-frontend
 	url = https://github.com/hanhwa-swcamp-22th-final/team2-frontend.git
+[submodule "team2-backend-documents"]
+	path = team2-backend-documents
+	url = https://github.com/hanhwa-swcamp-22th-final/team2-backend-documents.git
+[submodule "team2-backend-auth"]
+	path = team2-backend-auth
+	url = https://github.com/hanhwa-swcamp-22th-final/team2-backend-auth.git
+[submodule "team2-backend-master"]
+	path = team2-backend-master
+	url = https://github.com/hanhwa-swcamp-22th-final/team2-backend-master.git
+[submodule "team2-manifest"]
+	path = team2-manifest
+	url = https://github.com/hanhwa-swcamp-22th-final/team2-manifest.git
