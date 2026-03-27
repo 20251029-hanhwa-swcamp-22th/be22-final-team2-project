@@ -1,6 +1,3 @@
 [submodule "team2-frontend"]
 	path = team2-frontend
 	url = https://github.com/hanhwa-swcamp-22th-final/team2-frontend.git
-[submodule "team2-backend-activity"]
-	path = team2-backend-activity
-	url = https://github.com/chanjin346/team2-backend-activity.git
