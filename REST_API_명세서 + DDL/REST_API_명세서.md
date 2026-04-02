@@ -18,7 +18,7 @@
 - [2. Master Service (port 8012)](#2-master-service-port-8012)
   - [2.1 거래처 (Clients)](#21-거래처-clients)
   - [2.2 품목 (Items)](#22-품목-items)
-  - [2.3 바이어 (Buyers)](#23-바이어-buyers)
+  - [2.3 바이어 (Buyers)](#23-바이어-buyers) — 중첩 리소스 `/api/clients/{clientId}/buyers` 포함
   - [2.4 기초 마스터 데이터 (국가/통화/인코텀즈/항구/결제조건)](#24-기초-마스터-데이터-국가통화인코텀즈항구결제조건)
 - [3. Activity Service (port 8013)](#3-activity-service-port-8013)
   - [3.1 활동기록 (Activities)](#31-활동기록-activities)
@@ -808,37 +808,45 @@ Authorization: Bearer {accessToken}
 
 ### 2.1 거래처 (Clients)
 
-#### `GET /api/clients` — 전체 거래처 조회 ✅ 구현완료
+#### `GET /api/clients` — 거래처 목록 조회 (페이징) ✅ 구현완료
 
-등록된 모든 거래처 목록을 조회한다.
+거래처 목록을 페이징하여 조회한다. 검색 필터를 지원한다.
 
 **요청 헤더**: `Authorization: Bearer {accessToken}`
 
-**응답 `200 OK`**: `Client[]`
+**쿼리 파라미터**:
+
+| 파라미터 | 타입 | 필수 | 기본값 | 설명 |
+|----------|------|------|--------|------|
+| `page` | `int` | - | `0` | 페이지 번호 (0부터 시작) |
+| `size` | `int` | - | `10` | 페이지 크기 |
+| `clientName` | `String` | - | - | 거래처명 검색 (LIKE) |
+| `countryId` | `Integer` | - | - | 국가 ID 필터 |
+| `clientStatus` | `String` | - | - | 거래처 상태 필터 (`active` / `inactive`) |
+| `departmentId` | `Integer` | - | - | 담당 부서 ID 필터 |
+
+**응답 `200 OK`**: `PagedResponse<ClientListResponse>`
 
 ```json
-[
-  {
-    "id": 1,
-    "clientCode": "CL001",
-    "clientName": "ABC Trading",
-    "clientNameKr": "ABC 무역",
-    "country": { "id": 1, "countryCode": "US", "countryName": "United States", "countryNameKr": "미국" },
-    "clientCity": "New York",
-    "port": { "id": 1, "portCode": "USNYC", "portName": "New York Port", "portCity": "New York" },
-    "clientAddress": "123 Trade Ave, NY",
-    "clientTel": "+1-212-555-0100",
-    "clientEmail": "abc@trading.com",
-    "paymentTerm": { "id": 1, "paymentTermCode": "TT30", "paymentTermName": "T/T 30 Days" },
-    "currency": { "id": 1, "currencyCode": "USD", "currencyName": "US Dollar", "currencySymbol": "$" },
-    "clientManager": "홍길동",
-    "departmentId": 1,
-    "clientStatus": "활성",
-    "clientRegDate": "2026-01-15",
-    "createdAt": "2026-01-15T09:00:00",
-    "updatedAt": "2026-03-20T14:30:00"
-  }
-]
+{
+  "content": [
+    {
+      "clientId": 1,
+      "clientCode": "CL001",
+      "clientName": "ABC Trading",
+      "clientNameKr": "ABC 무역",
+      "countryName": "United States",
+      "clientCity": "New York",
+      "departmentId": 1,
+      "clientStatus": "active",
+      "clientRegDate": "2026-01-15"
+    }
+  ],
+  "page": 0,
+  "size": 10,
+  "totalElements": 1,
+  "totalPages": 1
+}
 ```
 
 ---
@@ -927,7 +935,7 @@ Authorization: Bearer {accessToken}
 
 **응답 `201 Created`**: 생성된 `Client` 객체
 
-**비고**: 생성 시 `clientStatus`는 자동으로 `활성`으로 설정된다.
+**비고**: 생성 시 `clientStatus`는 자동으로 `active`으로 설정된다.
 
 ---
 
@@ -980,11 +988,11 @@ Authorization: Bearer {accessToken}
 
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| `status` | `String` | O | `활성` / `비활성` |
+| `status` | `String` | O | `active` / `inactive` |
 
 ```json
 {
-  "status": "비활성"
+  "status": "inactive"
 }
 ```
 
@@ -996,38 +1004,50 @@ Authorization: Bearer {accessToken}
 |-----------|------|
 | `400 Bad Request` | 현재 상태와 동일한 상태로 변경 시도 (`"이미 {상태} 상태입니다."`) |
 
+> **참고**: 거래처 삭제(DELETE)는 제공하지 않는다. 비활성화가 필요한 경우 이 `PATCH /api/clients/{id}/status` 엔드포인트에 `{"status": "inactive"}`를 전송한다.
+
 ---
 
 ### 2.2 품목 (Items)
 
-#### `GET /api/items` — 전체 품목 조회 ✅ 구현완료
+#### `GET /api/items` — 품목 목록 조회 (페이징) ✅ 구현완료
 
-등록된 모든 품목 목록을 조회한다.
+품목 목록을 페이징하여 조회한다. 검색 필터를 지원한다.
 
 **요청 헤더**: `Authorization: Bearer {accessToken}`
 
-**응답 `200 OK`**: `Item[]`
+**쿼리 파라미터**:
+
+| 파라미터 | 타입 | 필수 | 기본값 | 설명 |
+|----------|------|------|--------|------|
+| `page` | `int` | - | `0` | 페이지 번호 (0부터 시작) |
+| `size` | `int` | - | `10` | 페이지 크기 |
+| `itemName` | `String` | - | - | 품목명 검색 (LIKE) |
+| `itemCategory` | `String` | - | - | 카테고리 필터 |
+| `itemStatus` | `String` | - | - | 품목 상태 필터 (`active` / `inactive`) |
+
+**응답 `200 OK`**: `PagedResponse<ItemListResponse>`
 
 ```json
-[
-  {
-    "id": 1,
-    "itemCode": "ITM001",
-    "itemName": "Steel Pipe",
-    "itemNameKr": "강관",
-    "itemSpec": "OD 100mm x 6m",
-    "itemUnit": "EA",
-    "itemPackUnit": "BUNDLE",
-    "itemUnitPrice": 150.00,
-    "itemWeight": 25.500,
-    "itemHsCode": "7304.19",
-    "itemCategory": "철강",
-    "itemStatus": "활성",
-    "itemRegDate": "2026-01-10",
-    "createdAt": "2026-01-10T09:00:00",
-    "updatedAt": "2026-03-20T14:30:00"
-  }
-]
+{
+  "content": [
+    {
+      "itemId": 1,
+      "itemCode": "ITM001",
+      "itemName": "Steel Pipe",
+      "itemNameKr": "강관",
+      "itemSpec": "OD 100mm x 6m",
+      "itemUnit": "EA",
+      "itemCategory": "철강",
+      "itemStatus": "active",
+      "itemRegDate": "2026-01-10"
+    }
+  ],
+  "page": 0,
+  "size": 10,
+  "totalElements": 1,
+  "totalPages": 1
+}
 ```
 
 ---
@@ -1094,7 +1114,7 @@ Authorization: Bearer {accessToken}
 
 **응답 `201 Created`**: 생성된 `Item` 객체
 
-**비고**: 생성 시 `itemStatus`는 자동으로 `활성`으로 설정된다.
+**비고**: 생성 시 `itemStatus`는 자동으로 `active`으로 설정된다.
 
 ---
 
@@ -1144,11 +1164,11 @@ Authorization: Bearer {accessToken}
 
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| `status` | `String` | O | `활성` / `비활성` |
+| `status` | `String` | O | `active` / `inactive` |
 
 ```json
 {
-  "status": "비활성"
+  "status": "inactive"
 }
 ```
 
@@ -1159,6 +1179,8 @@ Authorization: Bearer {accessToken}
 | 상태 코드 | 조건 |
 |-----------|------|
 | `400 Bad Request` | 현재 상태와 동일한 상태로 변경 시도 |
+
+> **참고**: 품목 삭제(DELETE)는 제공하지 않는다. 비활성화가 필요한 경우 이 `PATCH /api/items/{id}/status` 엔드포인트에 `{"status": "inactive"}`를 전송한다.
 
 ---
 
@@ -1224,6 +1246,62 @@ Authorization: Bearer {accessToken}
 | `clientId` | `Integer` | 거래처 ID |
 
 **응답 `200 OK`**: `Buyer[]`
+
+---
+
+#### `GET /api/clients/{clientId}/buyers` — 거래처별 바이어 목록 (중첩 리소스) ✅ 구현완료
+
+거래처 하위 리소스로서 해당 거래처에 소속된 바이어 목록을 조회한다. `/api/buyers/client/{clientId}`와 동일한 결과를 반환한다.
+
+**요청 헤더**: `Authorization: Bearer {accessToken}`
+
+**경로 파라미터**:
+
+| 파라미터 | 타입 | 설명 |
+|----------|------|------|
+| `clientId` | `Integer` | 거래처 ID |
+
+**응답 `200 OK`**: `Buyer[]`
+
+---
+
+#### `POST /api/clients/{clientId}/buyers` — 거래처별 바이어 생성 (중첩 리소스) ✅ 구현완료
+
+거래처 하위 리소스로서 해당 거래처에 바이어를 생성한다. 경로의 `clientId`가 자동으로 설정되므로 요청 본문에 `clientId`를 포함할 필요 없다.
+
+**요청 헤더**: `Authorization: Bearer {accessToken}`
+
+**경로 파라미터**:
+
+| 파라미터 | 타입 | 설명 |
+|----------|------|------|
+| `clientId` | `Integer` | 거래처 ID |
+
+**요청 본문**:
+
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| `buyerName` | `String` | O | 바이어명 (최대 100자) |
+| `buyerPosition` | `String` | - | 직책 (최대 100자) |
+| `buyerEmail` | `String` | - | 이메일 (최대 255자) |
+| `buyerTel` | `String` | - | 전화번호 (최대 50자) |
+
+```json
+{
+  "buyerName": "Jane Doe",
+  "buyerPosition": "Sales Director",
+  "buyerEmail": "jane@abctrading.com",
+  "buyerTel": "+1-212-555-0102"
+}
+```
+
+**응답 `201 Created`**: 생성된 `Buyer` 객체
+
+**에러 응답**:
+
+| 상태 코드 | 조건 |
+|-----------|------|
+| `404 Not Found` | 해당 거래처가 존재하지 않음 |
 
 ---
 
