@@ -1,0 +1,35 @@
+# 개발용 Docker Compose
+# MariaDB만 컨테이너로 띄우고, 백엔드는 IDE에서 직접 실행
+#
+# 사용법:
+#   docker compose -f docker-compose-dev.yml up -d
+#
+# 접속 정보:
+#   Host: localhost:3306
+#   Root PW: team2root
+#   User: team2 / PW: team2pass
+#
+# 스키마: team2_auth, team2_master, team2_activity, team2_docs (자동 생성)
+
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: team2-mariadb-dev
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: team2root
+      MARIADB_USER: team2
+      MARIADB_PASSWORD: team2pass
+    volumes:
+      - mariadb-dev-data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mariadb-dev-data:
