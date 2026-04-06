@@ -76,7 +76,7 @@ CREATE TABLE email_logs (
     email_recipient_name VARCHAR(100)               NULL,
     email_recipient_email VARCHAR(255)              NOT NULL,
     email_sender_id      INT                        NOT NULL COMMENT 'FK→auth.users',
-    email_status         ENUM('sent','failed')       NOT NULL DEFAULT 'sent',
+    email_status         ENUM('pending','sent','failed') NOT NULL DEFAULT 'pending',
     email_sent_at        TIMESTAMP                  NULL,
     created_at           TIMESTAMP                  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (email_log_id),
@@ -105,6 +105,7 @@ CREATE TABLE email_log_attachments (
     email_log_attachment_id INT          NOT NULL AUTO_INCREMENT,
     email_log_id            INT          NOT NULL,
     email_attachment_filename VARCHAR(255) NOT NULL,
+    email_attachment_s3_key  VARCHAR(500) NULL,
     PRIMARY KEY (email_log_attachment_id),
     INDEX idx_email_log_attachments_email_log_id (email_log_id),
     CONSTRAINT fk_email_log_attachments_email_log FOREIGN KEY (email_log_id) REFERENCES email_logs (email_log_id)

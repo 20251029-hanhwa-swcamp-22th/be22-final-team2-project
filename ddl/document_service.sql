@@ -296,6 +296,7 @@ CREATE TABLE approval_requests (
     approval_request_type   ENUM('registration','modification','deletion') NOT NULL,
     approval_requester_id   INT                                  NOT NULL, -- REFERENCES auth.users(id)
     approval_approver_id    INT                                  NOT NULL, -- REFERENCES auth.users(id)
+    approval_comment        TEXT                                     NULL,
     approval_status         ENUM('pending','approved','rejected')   NOT NULL DEFAULT 'pending',
     approval_review_snapshot JSON                                 NULL,
     approval_requested_at   TIMESTAMP                            NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -321,6 +321,7 @@ CREATE TABLE approval_requests (
     approval_request_type VARCHAR(20) NOT NULL,
     approval_requester_id INT NOT NULL,
     approval_approver_id INT,
+    approval_comment TEXT NULL,
     approval_status VARCHAR(10) NOT NULL,
     approval_review_snapshot VARCHAR(255),
     approval_requested_at DATETIME,
@@ -411,6 +412,7 @@ CREATE TABLE email_log_attachments (
     email_log_attachment_id INT NOT NULL,
     email_log_id INT NOT NULL,
     email_attachment_filename VARCHAR(255) NOT NULL,
+    email_attachment_s3_key  VARCHAR(500) NULL,
     PRIMARY KEY (email_log_attachment_id)
 );
 
