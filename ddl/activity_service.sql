@@ -53,6 +53,7 @@ CREATE TABLE activities (
 CREATE TABLE contacts (
     contact_id       INT          NOT NULL AUTO_INCREMENT,
     client_id        INT          NOT NULL COMMENT 'FK→master.clients',
+    writer_id        INT          NOT NULL COMMENT 'FK→auth.users (등록자)',
     contact_name     VARCHAR(100) NOT NULL,
     contact_position VARCHAR(100) NULL,
     contact_email    VARCHAR(255) NULL,
@@ -60,7 +61,8 @@ CREATE TABLE contacts (
     created_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (contact_id),
-    INDEX idx_contacts_client_id (client_id)
+    INDEX idx_contacts_client_id (client_id),
+    INDEX idx_contacts_writer_id (writer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -117,6 +119,8 @@ CREATE TABLE activity_packages (
     package_description TEXT           NULL,
     po_id               VARCHAR(30)    NULL     COMMENT 'FK→document.purchase_orders',
     creator_id          INT            NOT NULL COMMENT 'FK→auth.users',
+    date_from           DATE           NULL,
+    date_to             DATE           NULL,
     created_at          TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (package_id),

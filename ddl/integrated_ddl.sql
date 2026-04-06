@@ -418,8 +418,10 @@ CREATE TABLE activity_packages (
     package_id INT NOT NULL,
     package_title VARCHAR(100) NOT NULL,
     package_description VARCHAR(255),
-    po_id VARCHAR(20),
+    po_id VARCHAR(30),
     creator_id INT NOT NULL,
+    date_from DATE,
+    date_to DATE,
     created_at DATETIME,
     updated_at DATETIME,
     PRIMARY KEY (package_id)
