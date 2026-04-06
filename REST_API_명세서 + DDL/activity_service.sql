@@ -76,7 +76,7 @@ CREATE TABLE email_logs (
     email_recipient_name VARCHAR(100)               NULL,
     email_recipient_email VARCHAR(255)              NOT NULL,
     email_sender_id      INT                        NOT NULL COMMENT 'FK→auth.users',
-    email_status         ENUM('sent','failed')       NOT NULL DEFAULT 'sent',
+    email_status         ENUM('sent','failed','pending')       NOT NULL DEFAULT 'pending',
     email_sent_at        TIMESTAMP                  NULL,
     created_at           TIMESTAMP                  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (email_log_id),
