@@ -193,7 +193,7 @@ CREATE TABLE pi_items (
 );
 
 CREATE TABLE purchase_orders (
-    po_id VARCHAR(20) NOT NULL,
+    po_id VARCHAR(30) NOT NULL,
     pi_id VARCHAR(20),
     po_issue_date DATE,
     client_id INT,
@@ -227,7 +227,7 @@ CREATE TABLE purchase_orders (
 
 CREATE TABLE po_items (
     po_item_id INT NOT NULL,
-    po_id VARCHAR(20) NOT NULL,
+    po_id VARCHAR(30) NOT NULL,
     item_id INT,
     po_item_name VARCHAR(100),
     po_item_qty INT,
@@ -240,7 +240,7 @@ CREATE TABLE po_items (
 
 CREATE TABLE commercial_invoices (
     ci_id VARCHAR(20) NOT NULL,
-    po_id VARCHAR(20),
+    po_id VARCHAR(30),
     ci_invoice_date DATE,
     client_id INT,
     currency_id INT,
@@ -261,7 +261,7 @@ CREATE TABLE commercial_invoices (
 
 CREATE TABLE packing_lists (
     pl_id VARCHAR(20) NOT NULL,
-    po_id VARCHAR(20),
+    po_id VARCHAR(30),
     pl_invoice_date DATE,
     client_id INT,
     pl_gross_weight BIGINT,
@@ -280,7 +280,7 @@ CREATE TABLE packing_lists (
 
 CREATE TABLE production_orders (
     production_order_id VARCHAR(20) NOT NULL,
-    po_id VARCHAR(20),
+    po_id VARCHAR(30),
     production_issue_date DATE,
     client_id INT,
     manager_id INT,
@@ -359,7 +359,7 @@ CREATE TABLE shipments (
 CREATE TABLE activities (
     activity_id INT NOT NULL,
     client_id INT,
-    po_id VARCHAR(20),
+    po_id VARCHAR(30),
     activity_author_id INT,
     activity_date DATE,
     activity_type VARCHAR(20) NOT NULL,
@@ -389,7 +389,7 @@ CREATE TABLE contacts (
 CREATE TABLE email_logs (
     email_log_id INT NOT NULL,
     client_id INT,
-    po_id VARCHAR(20),
+    po_id VARCHAR(30),
     email_title VARCHAR(200),
     email_recipient_name VARCHAR(50),
     email_recipient_email VARCHAR(100),
@@ -425,6 +425,16 @@ CREATE TABLE activity_packages (
     created_at DATETIME,
     updated_at DATETIME,
     PRIMARY KEY (package_id)
+);
+
+CREATE TABLE docs_revision (
+    docs_revision_id BIGINT NOT NULL AUTO_INCREMENT,
+    doc_type VARCHAR(50) NOT NULL,
+    doc_id BIGINT NOT NULL,
+    snapshot_data JSON NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (docs_revision_id),
+    INDEX idx_docs_revision_doc (doc_type, doc_id)
 );
 
 CREATE TABLE activity_package_viewers (
