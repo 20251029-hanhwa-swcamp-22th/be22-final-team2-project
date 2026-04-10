@@ -459,7 +459,8 @@ be22-final-team2-project/         ← 루트 (서브모듈 오케스트레이션
 │   ├── 통합_테스트_결과서.xlsx      ← 249 tests / ALL GREEN
 │   └── 단위_테스트_시나리오.xlsx
 ├── .github/workflows/
-│   └── full-validation.yml       ← E2E 통합 검증 GHA (self-hosted runner)
+│   ├── full-validation.yml       ← E2E 통합 검증 GHA (self-hosted runner)
+│   └── sync-submodules.yml       ← 서브모듈 포인터 자동 동기화 (5분 cron)
 └── db/
     └── init/01-create-databases.sql
 ```
@@ -550,35 +551,71 @@ Route53 → ALB → Ingress (ALB Ingress Controller)
 
 ## CI/CD 파이프라인
 
+> **"개발자는 코드만 push하면 끝. 나머지는 전부 자동."**
+
+### Zero-Touch Delivery
+
+코드 push 한 번이면 **이미지 빌드 → 레지스트리 → 태그 감지 → k8s 배포 → 서브모듈 포인터 갱신**까지 사람 개입 없이 완료됩니다.
+
 ```
 개발자 push (main)
      │
-     ▼
-GitHub Actions ─────► ghcr.io 이미지 빌드 + 푸시
-  (각 서브모듈)         :latest + :${git SHA}
-                              │
-                              ▼  (~2분 폴링)
-                    ArgoCD Image Updater
-                      newest-build 전략
-                      :latest 무시, SHA만 추적
-                              │
-                              ▼
-                         ArgoCD sync
-                      auto + prune + selfHeal
-                              │
-                              ▼
-                     k8s Rolling Update
-                       무중단 자동 배포
+     ├──► [GitHub Actions]              ← 각 서브모듈 자동 트리거
+     │       docker build + push
+     │       ghcr.io:latest + :${SHA}
+     │              │
+     │              ▼  (~2분 폴링)
+     │    [ArgoCD Image Updater]        ← ghcr.io 레지스트리 watch
+     │       newest-build 전략
+     │       :latest 무시, SHA만 추적
+     │              │
+     │              ▼
+     │    [ArgoCD auto sync]            ← GitOps 자동 배포
+     │       prune + selfHeal
+     │              │
+     │              ▼
+     │    [k8s Rolling Update]          ← Pod 무중단 교체
+     │       readinessProbe 통과 후 트래픽 전환
+     │
+     └──► [Submodule Sync Workflow]     ← 루트 레포 포인터 자동 갱신
+              5분 cron 또는 수동 트리거
+              변경된 서브모듈만 감지 → commit + push
+              [skip ci] 로 자기 자신 재트리거 방지
 ```
 
-| 단계 | 소요 시간 |
-|------|----------|
-| GHA 빌드 + 푸시 | ~3-5분 |
+### 자동화 범위
+
+| 단계 | 도구 | 사람 개입 |
+|------|------|----------|
+| 코드 push | 개발자 | **유일하게 사람이 하는 것** |
+| Docker 이미지 빌드 + 푸시 | GitHub Actions | 자동 |
+| 새 이미지 태그 감지 | ArgoCD Image Updater | 자동 |
+| k8s Deployment 갱신 | ArgoCD auto sync | 자동 |
+| Pod rolling update | Kubernetes | 자동 |
+| 루트 레포 서브모듈 포인터 갱신 | GHA cron workflow | 자동 |
+| Rollback | ArgoCD UI 1-click | 반자동 |
+
+### 소요 시간
+
+| 구간 | 시간 |
+|------|------|
+| GHA 빌드 + ghcr.io 푸시 | ~3-5분 |
 | Image Updater 감지 | ~2분 |
 | ArgoCD sync + Pod 교체 | ~1-2분 |
-| **총 (push → 운영)** | **~6-9분** |
+| 서브모듈 포인터 동기화 | ~5분 (cron) |
+| **총 (push → 운영 반영)** | **~6-9분** |
+| **총 (push → 루트 레포 갱신)** | **~10분 이내** |
 
-> Rollback: ArgoCD UI에서 이전 revision sync 또는 `kubectl set image`
+### Rollback
+
+```bash
+# ArgoCD UI (https://playdata4.iptime.org:8043)
+# → salesboost → History → 이전 revision → Rollback
+
+# 또는 CLI
+argocd app rollback salesboost <revision>
+kubectl -n team2 set image deploy/서비스명 서비스명=ghcr.io/...:이전SHA
+```
 
 ---
 
