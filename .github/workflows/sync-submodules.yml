@@ -1,0 +1,50 @@
+name: Sync Submodule Pointers
+
+on:
+  # 5분마다 체크 — 변경 없으면 커밋 안 함
+  schedule:
+    - cron: '*/5 * * * *'
+  # 수동 트리거 (즉시 동기화)
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+          token: ${{ secrets.SUBMODULE_SYNC_PAT }}
+
+      - name: Update all submodules to latest main
+        run: |
+          git submodule foreach 'git fetch origin main && git checkout main && git pull origin main'
+
+      - name: Check for pointer changes
+        id: check
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No submodule changes detected."
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Submodule changes detected:"
+            git diff --name-only
+          fi
+
+      - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          # 변경된 서브모듈 목록을 커밋 메시지에 포함
+          CHANGED=$(git diff --cached --name-only | tr '\n' ', ' | sed 's/,$//')
+          git commit -m "chore: auto-sync submodule pointers [skip ci]
+
+          Updated: ${CHANGED}"
+          git push
