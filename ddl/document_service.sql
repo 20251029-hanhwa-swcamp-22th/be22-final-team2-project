@@ -236,8 +236,9 @@ CREATE TABLE packing_lists (
 -- 7. production_orders (생산지시서)
 -- ------------------------------------------------------------
 CREATE TABLE production_orders (
-    production_order_id      VARCHAR(30)     NOT NULL,                  -- 문서번호: PRD2025001
-    po_id                    VARCHAR(30)     NOT NULL,
+    production_order_id      BIGINT          NOT NULL AUTO_INCREMENT,   -- 내부 PK
+    production_order_code    VARCHAR(30)     NOT NULL,                  -- 문서번호: PRD2025001
+    po_id                    BIGINT          NOT NULL,                  -- purchase_orders.po_id FK
     production_issue_date    DATE            NOT NULL,
     client_id                INT             NOT NULL,                  -- REFERENCES master.clients(id)
     manager_id               INT             NULL,                      -- REFERENCES auth.users(id)
@@ -255,6 +256,7 @@ CREATE TABLE production_orders (
     updated_at               TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (production_order_id),
+    CONSTRAINT uk_production_order_code UNIQUE (production_order_code),
     INDEX idx_prod_po_id (po_id),
     INDEX idx_prod_status (production_status),
     INDEX idx_prod_client_id (client_id),
@@ -266,8 +268,9 @@ CREATE TABLE production_orders (
 -- 8. shipment_orders (출하지시서)
 -- ------------------------------------------------------------
 CREATE TABLE shipment_orders (
-    shipment_order_id        VARCHAR(30)     NOT NULL,                  -- 문서번호: SH2025001
-    po_id                    VARCHAR(30)     NOT NULL,
+    shipment_order_id        BIGINT          NOT NULL AUTO_INCREMENT,   -- 내부 PK
+    shipment_order_code      VARCHAR(30)     NOT NULL,                  -- 문서번호: SH2025001
+    po_id                    BIGINT          NOT NULL,                  -- purchase_orders.po_id FK
     shipment_issue_date      DATE            NOT NULL,
     client_id                INT             NOT NULL,                  -- REFERENCES master.clients(id)
     manager_id               INT             NULL,                      -- REFERENCES auth.users(id)
@@ -285,6 +288,7 @@ CREATE TABLE shipment_orders (
     updated_at               TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (shipment_order_id),
+    CONSTRAINT uk_shipment_order_code UNIQUE (shipment_order_code),
     INDEX idx_ship_po_id (po_id),
     INDEX idx_ship_status (shipment_status),
     INDEX idx_ship_client_id (client_id),
@@ -303,7 +307,7 @@ CREATE TABLE approval_requests (
     approval_requester_id   INT                                  NOT NULL, -- REFERENCES auth.users(id)
     approval_approver_id    INT                                  NOT NULL, -- REFERENCES auth.users(id)
     approval_comment        TEXT                                     NULL,
-	approval_reason        TEXT                                      NULL,
+    approval_reason         TEXT                                     NULL,
     approval_status         ENUM('pending','approved','rejected')   NOT NULL DEFAULT 'pending',
     approval_review_snapshot JSON                                 NULL,
     approval_requested_at   TIMESTAMP                            NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -320,8 +324,8 @@ CREATE TABLE approval_requests (
 -- 10. collections (매출·수금 현황)
 -- ------------------------------------------------------------
 CREATE TABLE collections (
-    collection_id           INT             NOT NULL AUTO_INCREMENT,
-    po_id                   VARCHAR(30)     NOT NULL,
+    collection_id           BIGINT          NOT NULL AUTO_INCREMENT,
+    po_id                   BIGINT          NOT NULL,                   -- purchase_orders.po_id FK
     client_id               INT             NOT NULL,                   -- REFERENCES master.clients(id)
     manager_id              INT             NOT NULL,                   -- REFERENCES auth.users(id)
     currency_id             INT             NOT NULL,                   -- REFERENCES master.currencies(id)
@@ -346,9 +350,9 @@ CREATE TABLE collections (
 -- 11. shipments (출하현황)
 -- ------------------------------------------------------------
 CREATE TABLE shipments (
-    shipment_id           INT             NOT NULL AUTO_INCREMENT,
-    po_id                 VARCHAR(30)     NOT NULL,
-    shipment_order_id     VARCHAR(30)     NOT NULL,
+    shipment_id           BIGINT          NOT NULL AUTO_INCREMENT,
+    po_id                 BIGINT          NOT NULL,                   -- purchase_orders.po_id FK
+    shipment_order_id     BIGINT          NOT NULL,                   -- shipment_orders.shipment_order_id FK
     client_id             INT             NOT NULL,                 -- REFERENCES master.clients(id)
     shipment_request_date DATE            NULL,
     shipment_due_date     DATE            NULL,
