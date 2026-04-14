@@ -1,16 +1,18 @@
 CREATE TABLE positions (
-    position_id INT NOT NULL,
+    position_id INT NOT NULL AUTO_INCREMENT,
     position_name VARCHAR(50) NOT NULL,
     position_level INT NOT NULL,
     created_at DATETIME,
-    PRIMARY KEY (position_id)
+    PRIMARY KEY (position_id),
+    CONSTRAINT uk_position_name UNIQUE (position_name)
 );
 
 CREATE TABLE departments (
-    department_id INT NOT NULL,
-    department_name VARCHAR(50) NOT NULL,
+    department_id INT NOT NULL AUTO_INCREMENT,
+    department_name VARCHAR(100) NOT NULL,
     created_at DATETIME,
-    PRIMARY KEY (department_id)
+    PRIMARY KEY (department_id),
+    CONSTRAINT uk_department_name UNIQUE (department_name)
 );
 
 CREATE TABLE users (

@@ -24,7 +24,8 @@ CREATE TABLE positions (
     position_name  VARCHAR(50)  NOT NULL,
     position_level INT          NOT NULL,
     created_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (position_id)
+    PRIMARY KEY (position_id),
+    CONSTRAINT uk_position_name UNIQUE (position_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -34,7 +35,8 @@ CREATE TABLE departments (
     department_id   INT          NOT NULL AUTO_INCREMENT,
     department_name VARCHAR(100) NOT NULL,
     created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (department_id)
+    PRIMARY KEY (department_id),
+    CONSTRAINT uk_department_name UNIQUE (department_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------

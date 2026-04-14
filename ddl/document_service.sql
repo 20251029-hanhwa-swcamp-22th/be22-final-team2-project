@@ -32,7 +32,8 @@ DROP TABLE IF EXISTS proforma_invoices;
 -- 1. proforma_invoices (견적송장 PI)
 -- ------------------------------------------------------------
 CREATE TABLE proforma_invoices (
-    pi_id                   VARCHAR(30)     NOT NULL,                   -- 문서번호: PI2025001
+    pi_id                   BIGINT          NOT NULL AUTO_INCREMENT,    -- 내부 PK
+    pi_code                 VARCHAR(30)     NOT NULL,                   -- 문서번호: PI2025001
     pi_issue_date           DATE            NOT NULL,
     client_id               INT             NOT NULL,                   -- REFERENCES master.clients(id)
     currency_id             INT             NOT NULL,                   -- REFERENCES master.currencies(id)
@@ -68,6 +69,7 @@ CREATE TABLE proforma_invoices (
     updated_at              TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pi_id),
+    CONSTRAINT uk_pi_code UNIQUE (pi_code),
     INDEX idx_pi_status (pi_status),
     INDEX idx_pi_issue_date (pi_issue_date),
     INDEX idx_pi_client_id (client_id),
@@ -79,8 +81,8 @@ CREATE TABLE proforma_invoices (
 -- 2. pi_items (PI 품목)
 -- ------------------------------------------------------------
 CREATE TABLE pi_items (
-    pi_item_id      INT            NOT NULL AUTO_INCREMENT,
-    pi_id           VARCHAR(30)    NOT NULL,
+    pi_item_id      BIGINT         NOT NULL AUTO_INCREMENT,
+    pi_id           BIGINT         NOT NULL,                          -- proforma_invoices.pi_id FK
     item_id         INT            NULL,                             -- REFERENCES master.items(id)
     pi_item_name    VARCHAR(200)   NOT NULL,
     pi_item_qty     INT            NOT NULL DEFAULT 0,
@@ -98,8 +100,9 @@ CREATE TABLE pi_items (
 -- 3. purchase_orders (발주서 PO)
 -- ------------------------------------------------------------
 CREATE TABLE purchase_orders (
-    po_id                       VARCHAR(30)     NOT NULL,            -- 문서번호: PO2025001
-    pi_id                       VARCHAR(30)     NULL,
+    po_id                       BIGINT          NOT NULL AUTO_INCREMENT, -- 내부 PK
+    po_code                     VARCHAR(30)     NOT NULL,                -- 문서번호: PO2025001
+    pi_id                       BIGINT          NULL,                    -- proforma_invoices.pi_id FK
     po_issue_date               DATE            NOT NULL,
     client_id                   INT             NOT NULL,            -- REFERENCES master.clients(id)
     currency_id                 INT             NOT NULL,            -- REFERENCES master.currencies(id)
@@ -137,6 +140,7 @@ CREATE TABLE purchase_orders (
     updated_at                  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (po_id),
+    CONSTRAINT uk_po_code UNIQUE (po_code),
     INDEX idx_po_status (po_status),
     INDEX idx_po_issue_date (po_issue_date),
     INDEX idx_po_client_id (client_id),
@@ -150,8 +154,8 @@ CREATE TABLE purchase_orders (
 -- 4. po_items (PO 품목)
 -- ------------------------------------------------------------
 CREATE TABLE po_items (
-    po_item_id      INT            NOT NULL AUTO_INCREMENT,
-    po_id           VARCHAR(30)    NOT NULL,
+    po_item_id      BIGINT         NOT NULL AUTO_INCREMENT,
+    po_id           BIGINT         NOT NULL,                          -- purchase_orders.po_id FK
     item_id         INT            NULL,                             -- REFERENCES master.items(id)
     po_item_name    VARCHAR(200)   NOT NULL,
     po_item_qty     INT            NOT NULL DEFAULT 0,
@@ -169,13 +173,14 @@ CREATE TABLE po_items (
 -- 5. commercial_invoices (상업송장 CI)
 -- ------------------------------------------------------------
 CREATE TABLE commercial_invoices (
-    ci_id                 VARCHAR(30)     NOT NULL,                 -- 문서번호: CI2025001
-    po_id                 VARCHAR(30)     NOT NULL,
+    ci_id                 BIGINT          NOT NULL AUTO_INCREMENT,   -- 내부 PK
+    ci_code               VARCHAR(30)     NOT NULL,                  -- 문서번호: CI2025001
+    po_id                 BIGINT          NOT NULL,                  -- purchase_orders.po_id FK
     ci_invoice_date       DATE            NOT NULL,
-    client_id             INT             NOT NULL,                 -- REFERENCES master.clients(id)
-    currency_id           INT             NOT NULL,                 -- REFERENCES master.currencies(id)
+    client_id             INT             NOT NULL,
+    currency_id           INT             NOT NULL,
     ci_total_amount       DECIMAL(15,2)   NOT NULL DEFAULT 0,
-    ci_status             ENUM('pending','completed') NOT NULL DEFAULT 'pending',
+    ci_status             VARCHAR(20)     NOT NULL DEFAULT 'pending',
 
     -- 출력용 스냅샷
     ci_client_name        VARCHAR(200)    NULL,
@@ -191,22 +196,23 @@ CREATE TABLE commercial_invoices (
     created_at            TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (ci_id),
+    CONSTRAINT uk_ci_code UNIQUE (ci_code),
     INDEX idx_ci_po_id (po_id),
     INDEX idx_ci_client_id (client_id),
-    INDEX idx_ci_invoice_date (ci_invoice_date),
-    CONSTRAINT fk_ci_po FOREIGN KEY (po_id) REFERENCES purchase_orders (po_id)
+    INDEX idx_ci_invoice_date (ci_invoice_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
 -- 6. packing_lists (포장명세서 PL)
 -- ------------------------------------------------------------
 CREATE TABLE packing_lists (
-    pl_id                 VARCHAR(30)     NOT NULL,                 -- 문서번호: PL2025001
-    po_id                 VARCHAR(30)     NOT NULL,
+    pl_id                 BIGINT          NOT NULL AUTO_INCREMENT,   -- 내부 PK
+    pl_code               VARCHAR(30)     NOT NULL,                  -- 문서번호: PL2025001
+    po_id                 BIGINT          NOT NULL,                  -- purchase_orders.po_id FK
     pl_invoice_date       DATE            NOT NULL,
-    client_id             INT             NOT NULL,                 -- REFERENCES master.clients(id)
-    pl_gross_weight       DECIMAL(10,3)   NULL,
-    pl_status             ENUM('pending','completed') NOT NULL DEFAULT 'pending',
+    client_id             INT             NOT NULL,
+    pl_gross_weight       DECIMAL(38,2)   NULL,
+    pl_status             VARCHAR(20)     NOT NULL DEFAULT 'pending',
 
     -- 출력용 스냅샷
     pl_client_name        VARCHAR(200)    NULL,
@@ -221,9 +227,9 @@ CREATE TABLE packing_lists (
     created_at            TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (pl_id),
+    CONSTRAINT uk_pl_code UNIQUE (pl_code),
     INDEX idx_pl_po_id (po_id),
-    INDEX idx_pl_client_id (client_id),
-    CONSTRAINT fk_pl_po FOREIGN KEY (po_id) REFERENCES purchase_orders (po_id)
+    INDEX idx_pl_client_id (client_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -297,6 +303,7 @@ CREATE TABLE approval_requests (
     approval_requester_id   INT                                  NOT NULL, -- REFERENCES auth.users(id)
     approval_approver_id    INT                                  NOT NULL, -- REFERENCES auth.users(id)
     approval_comment        TEXT                                     NULL,
+	approval_reason        TEXT                                      NULL,
     approval_status         ENUM('pending','approved','rejected')   NOT NULL DEFAULT 'pending',
     approval_review_snapshot JSON                                 NULL,
     approval_requested_at   TIMESTAMP                            NOT NULL DEFAULT CURRENT_TIMESTAMP,
