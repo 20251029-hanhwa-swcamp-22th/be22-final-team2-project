@@ -2,8 +2,9 @@
 -- Auth Service DDL
 -- 서비스 설명: 사용자 인증/인가 관련 테이블
 --   - positions: 직급 마스터
---   - departments: 부서 마스터
---   - users: 사용자 계정 (로그인, 권한, 소속 정보)
+--   - departments: 부서 마스터 (최상위 조직)
+--   - teams: 팀 마스터 (부서 하위 조직)
+--   - users: 사용자 계정 (로그인, 권한, 소속 정보 — team_id 만 보유, 부서는 team→department 로 해소)
 --   - company: 회사 기본 정보
 --   - refresh_tokens: JWT 리프레시 토큰 관리
 -- Engine: InnoDB | Charset: utf8mb4_unicode_ci
@@ -13,6 +14,7 @@
 DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS company;
+DROP TABLE IF EXISTS teams;
 DROP TABLE IF EXISTS departments;
 DROP TABLE IF EXISTS positions;
 
@@ -40,6 +42,20 @@ CREATE TABLE departments (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
+-- 2-1. teams (팀 — 부서 하위 조직)
+-- ------------------------------------------------------------
+CREATE TABLE teams (
+    team_id       INT          NOT NULL AUTO_INCREMENT,
+    team_name     VARCHAR(100) NOT NULL,
+    department_id INT          NOT NULL,
+    created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (team_id),
+    CONSTRAINT uk_team_name_per_dept UNIQUE (department_id, team_name),
+    CONSTRAINT fk_teams_department FOREIGN KEY (department_id) REFERENCES departments (department_id),
+    INDEX idx_teams_department (department_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
 -- 3. users (사용자)
 -- ------------------------------------------------------------
 CREATE TABLE users (
@@ -49,7 +65,7 @@ CREATE TABLE users (
     user_email    VARCHAR(255)                   NOT NULL,
     user_pw       VARCHAR(255)                   NOT NULL COMMENT 'bcrypt hash',
     user_role     ENUM('admin','sales','production','shipping') NOT NULL DEFAULT 'sales',
-    department_id INT                            NULL,
+    team_id       INT                            NULL COMMENT '소속 팀 (팀 → 부서 역참조)',
     position_id   INT                            NULL,
     user_status   ENUM('active','on_leave','retired') NOT NULL DEFAULT 'active',
     created_at    TIMESTAMP                      NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -59,9 +75,9 @@ CREATE TABLE users (
     UNIQUE KEY uk_users_user_email (user_email),
     INDEX idx_users_user_email (user_email),
     INDEX idx_users_employee_no (employee_no),
-    INDEX idx_users_department_id (department_id),
+    INDEX idx_users_team_id (team_id),
     INDEX idx_users_position_id (position_id),
-    CONSTRAINT fk_users_department_id FOREIGN KEY (department_id) REFERENCES departments (department_id),
+    CONSTRAINT fk_users_team_id       FOREIGN KEY (team_id)       REFERENCES teams (team_id),
     CONSTRAINT fk_users_position_id   FOREIGN KEY (position_id)   REFERENCES positions (position_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

@@ -107,7 +107,7 @@ CREATE TABLE clients (
     payment_term_id  INT          DEFAULT NULL,
     currency_id      INT          DEFAULT NULL,
     client_manager   VARCHAR(100) DEFAULT NULL,
-    department_id    INT          DEFAULT NULL, -- REFERENCES auth.departments(id)
+    team_id          INT          DEFAULT NULL, -- REFERENCES auth.teams(team_id) — 담당 팀 (팀→부서 역참조)
     client_status    ENUM('active','inactive') NOT NULL DEFAULT 'active',
     client_reg_date  DATE         DEFAULT NULL,
     created_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -123,7 +123,7 @@ CREATE TABLE clients (
 CREATE INDEX idx_clients_client_name ON clients (client_name);
 CREATE INDEX idx_clients_client_status ON clients (client_status);
 CREATE INDEX idx_clients_country_id ON clients (country_id);
-CREATE INDEX idx_clients_department_id ON clients (department_id);
+CREATE INDEX idx_clients_team_id ON clients (team_id);
 
 -- ------------------------------------------------------------
 -- 7. items (품목)
