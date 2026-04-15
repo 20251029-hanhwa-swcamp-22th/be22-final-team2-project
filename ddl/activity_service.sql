@@ -48,12 +48,14 @@ CREATE TABLE activities (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
--- 2. contacts (거래처 관련 연락처)
+-- 2. contacts (영업담당자 개인 인맥 — 거래처 무관)
+-- 컨택리스트는 작성자(writer_id) 기준 개인 주소록. 거래처 사람일 필요 없음.
+-- Buyer sync 는 같은 팀 sales 각각에 별도 row 생성하여 팀 공유 보장.
+-- (client_id 컬럼 제거 — Contact 와 Client 는 직접 관계 없음. 거래처 담당자 = master.buyers)
 -- ------------------------------------------------------------
 CREATE TABLE contacts (
     contact_id       INT          NOT NULL AUTO_INCREMENT,
-    client_id        INT          NOT NULL COMMENT 'FK→master.clients',
-    writer_id        INT          NOT NULL COMMENT 'FK→auth.users (등록자)',
+    writer_id        INT          NOT NULL COMMENT 'FK→auth.users (등록자) — 본인만 조회 가능 (admin 전체)',
     contact_name     VARCHAR(100) NOT NULL,
     contact_position VARCHAR(100) NULL,
     contact_email    VARCHAR(255) NULL,
@@ -61,7 +63,6 @@ CREATE TABLE contacts (
     created_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (contact_id),
-    INDEX idx_contacts_client_id (client_id),
     INDEX idx_contacts_writer_id (writer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

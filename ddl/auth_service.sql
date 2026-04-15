@@ -95,7 +95,10 @@ CREATE TABLE company (
     company_website        VARCHAR(255) NULL,
     company_seal_image_url VARCHAR(500) NULL,
     updated_at             TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (company_id)
+    PRIMARY KEY (company_id),
+    -- CompanyBootstrap 이전 버그로 매 재기동마다 INSERT 누적되던 문제 방지 +
+    -- 자사 정보는 단일 row 정책. 운영 DB 는 이미 19→1건 정리 완료.
+    CONSTRAINT uk_company_name UNIQUE (company_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
