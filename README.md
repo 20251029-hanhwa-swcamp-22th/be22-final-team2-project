@@ -450,7 +450,9 @@ Browser → POST /api/auth/logout
 | Docker | 컨테이너 빌드 (multi-stage, non-root) |
 | nginx | 프론트 정적 서빙 + API 리버스 프록시 (Pod 내부) |
 | MariaDB 11 | RDBMS (k8s StatefulSet + PVC, 4 스키마 분리) |
-| AWS EKS + ALB + RDS | Phase 3b 프로덕션 (계획) |
+| AWS EKS + ALB | Phase 3b 백엔드 프로덕션 (마이그레이션 진행) |
+| S3 + CloudFront + Route 53 + ACM | Phase 3b 정적 프론트 + 파일 스토리지 |
+| AWS SDK for Java v2 (S3) | auth/master 파일 업로드 (IRSA 인증) |
 
 ---
 
@@ -556,17 +558,41 @@ playdata4.iptime.org
 | argocd-image-updater | argocd | ghcr.io 이미지 태그 자동 감지 |
 | salesboost (Application) | argocd | `team2-manifest/k8s/overlays/prod` watch → auto sync |
 
-### Phase 3b — AWS EKS (계획)
+### Phase 3b — AWS 마이그레이션 (진행 중)
+
+프론트는 CloudFront + S3 정적 호스팅, 백엔드는 EKS, 파일 스토리지(도장/로고/첨부)는 S3, DB 는 기존 Linux 머신을 그대로 재사용 (Site-to-Site TLS + IP allowlist) 하는 하이브리드 구조로 전환합니다.
 
 ```
-Route53 → ALB → Ingress (ALB Ingress Controller)
-                  ├─ /api/* → Gateway Service
-                  └─ /*     → Frontend Service
-                  TLS: ACM 인증서
-                  DB: RDS Aurora MariaDB
+            Route 53 (Hosted Zone)
+               │
+               ├─ app.salesboost.kr ─► CloudFront ─► S3 (Vue dist, OAC)
+               │                         │ TLS: ACM (us-east-1)
+               │                         │ SPA fallback: 403/404 → /index.html
+               │
+               └─ api.salesboost.kr ─► ALB (ap-northeast-2) ─► EKS Ingress (ALB Controller)
+                                                                 ├─ /api/* → gateway Pod
+                                                                 └─ /.well-known/* → gateway Pod
+                                                                        │
+                                          ┌─────────────────────────────┼─────────────────────────────┐
+                                          ▼                             ▼                             ▼
+                                     Auth Pod (IRSA)             Master Pod (IRSA)         Activity/Documents Pod
+                                          │ S3 SDK                     │ S3 SDK                        │
+                                          └─────► S3 Bucket (team2-files, OAC + SSE-S3) ◄──────────────┘
+                                                                       │
+                                                     NAT GW (EIP 고정) ─┼─► MariaDB 11 (Linux @ playdata4)
+                                                                       │   TLS + IP allowlist + 전용 계정
 ```
 
-> 상세: [`docs/k8s-전환-및-CICD-전략.md`](docs/k8s-전환-및-CICD-전략.md)
+| 컴포넌트 | 서비스 | 비고 |
+|---|---|---|
+| 프론트 정적 호스팅 | S3 + CloudFront + Route 53 + ACM | OAC (Origin Access Control), SPA fallback |
+| 백엔드 | EKS (ap-northeast-2) + AWS Load Balancer Controller | 기존 Kustomize manifest 재사용, `overlays/eks` 추가 |
+| 파일 스토리지 | S3 (`team2-files`) | auth/master 에서 IRSA 로 접근, CloudFront OAC 로 read |
+| 데이터베이스 | 기존 Linux MariaDB 11 | RDS 미사용 — TLS + 방화벽 고정 EIP 허용 + 전용 app 계정 |
+| CI/CD | GitHub Actions → ghcr.io → ArgoCD Image Updater | 기존 파이프라인 그대로 재사용 (registry 변경 없음) |
+
+> 상세 마이그레이션 가이드: [`docs/aws-migration-guide.md`](docs/aws-migration-guide.md)
+> 구 계획 문서: [`docs/k8s-전환-및-CICD-전략.md`](docs/k8s-전환-및-CICD-전략.md)
 
 ---
 
