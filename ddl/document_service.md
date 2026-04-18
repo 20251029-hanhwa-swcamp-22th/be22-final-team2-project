@@ -78,18 +78,23 @@
 
 **pi_status ENUM 값 및 전이**:
 
-| 상태 | 설명 | 전이 가능 상태 |
+| 상태 (dbValue) | 설명 | 전이 가능 상태 |
 |------|------|----------------|
-| `초안` | 최초 등록 (팀원) | → 등록요청 |
-| `등록요청` | 결재 요청됨 | → 확정 (승인) / 반려 |
-| `결재대기` | 결재 대기 중 | → 확정 (승인) / 반려 |
-| `확정` | 승인 완료 | → 수정요청 / 삭제요청 |
-| `수정요청` | 수정 결재 요청됨 | → 확정 (승인) / 반려 |
-| `삭제요청` | 삭제 결재 요청됨 | → 취소 (승인) / 반려 |
-| `반려` | 결재 거부됨 | → 등록요청 (재요청) |
-| `취소` | 삭제 승인됨 (소프트 삭제) | 최종 상태 |
+| `초안` (`draft`) | 최초 등록 (팀원) | → 등록요청 / **직접 수정** / **직접 삭제** |
+| `등록요청` (`registration_requested`) | 결재 요청됨 | → 확정 (승인) / 반려 |
+| `결재대기` (`pending_approval`) | 결재 대기 중 | → 확정 (승인) / 반려 / **요청자 본인 취소** |
+| `확정` (`confirmed`) | 승인 완료 | → 수정요청 / 삭제요청 |
+| `수정요청` (`modification_requested`) | 수정 결재 요청됨 | → 확정 (승인) / 반려 |
+| `삭제요청` (`deletion_requested`) | 삭제 결재 요청됨 | → 삭제 (승인) / 반려 |
+| `반려` (`rejected`) | 결재 거부됨 | → 등록요청 (재요청) |
+| `취소` (`cancelled`) | 요청 취소/반려 후 비활성화 | 최종 상태 |
+| `삭제` (`deleted`) | 삭제 승인/초안 직접 삭제 (소프트 삭제) | 최종 상태 |
 
-**팀장 바이패스**: `position_level = 1`인 경우 결재 과정 없이 즉시 `확정` 처리
+**상태별 직접 액션** (결재 없이):
+- **초안** 상태에서 요청자 본인: `PUT /api/proforma-invoices/{piId}` (수정), `DELETE /api/proforma-invoices/{piId}` (soft delete, status=`deleted`)
+- **결재대기** 상태에서 요청자 본인: `POST /api/proforma-invoices/{piId}/cancel-approval` — REGISTRATION 취소 시 `초안`, MODIFICATION/DELETION 취소 시 `확정` 으로 복구
+
+**팀장 바이패스**: `position_level = 1` (MANAGER) 인 경우 결재 과정 없이 즉시 `확정` / 삭제 시 즉시 `삭제` 처리
 
 **사용 화면**: PIPage (목록/생성/수정/삭제), PIDetailPage (상세/PDF)
 
@@ -312,7 +317,10 @@ PI/PO 문서의 결재 워크플로우를 관리합니다.
 |----|------|-------------|
 | `등록요청` | 신규 문서 등록 요청 | 문서 pi_status/po_status → '확정' |
 | `수정요청` | 기존 문서 수정 요청 | 변경사항 적용 + pi_status/po_status → '확정' |
-| `삭제요청` | 문서 삭제 요청 | 문서 pi_status/po_status → '취소' |
+| `삭제요청` | 문서 삭제 요청 | 문서 pi_status/po_status → '삭제' (soft delete) |
+
+> 반려/취소 시: REGISTRATION 은 `초안` 으로, MODIFICATION/DELETION 은 `확정` 으로 복구.
+> 요청자 본인이 결재대기 중 `POST /{id}/cancel-approval` 로 선취소 가능 (동일 복구 로직).
 
 **approval_review_snapshot 구조** (JSON):
 ```json

@@ -225,7 +225,7 @@ erDiagram
         INT client_id FK "cross: master.clients"
         INT currency_id FK "cross: master.currencies"
         INT manager_id FK "cross: auth.users"
-        ENUM pi_status "초안 | 확정 | 결재대기 | 반려 | 삭제요청 | 등록요청 | 수정요청 | 취소"
+        ENUM pi_status "초안 | 확정 | 결재대기 | 반려 | 삭제요청 | 등록요청 | 수정요청 | 취소 | 삭제"
         DATE pi_delivery_date
         VARCHAR pi_incoterms_code
         VARCHAR pi_named_place
@@ -267,7 +267,7 @@ erDiagram
         INT client_id FK "cross: master.clients"
         INT currency_id FK "cross: master.currencies"
         INT manager_id FK "cross: auth.users"
-        ENUM po_status "초안 | 확정 | 결재대기 | 반려 | 삭제요청 | 등록요청 | 수정요청 | 취소"
+        ENUM po_status "초안 | 확정 | 결재대기 | 반려 | 삭제요청 | 등록요청 | 수정요청 | 취소 | 삭제"
         DATE po_delivery_date
         VARCHAR po_incoterms_code
         VARCHAR po_named_place

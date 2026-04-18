@@ -104,7 +104,7 @@
 | email_recipient_name | VARCHAR(100) | NULL | 수신자명 |
 | email_recipient_email | VARCHAR(255) | NOT NULL | 수신자 이메일 |
 | email_sender_id | INT | NOT NULL | FK → auth.users.user_id (발송자) |
-| email_status | ENUM('발송','실패') | DEFAULT '발송' | 발송 상태 |
+| email_status | ENUM('pending','sending','sent','failed') | DEFAULT 'pending' | 발송 상태 (재전송 중 SENDING 마커 포함) |
 | email_sent_at | TIMESTAMP | NULL | 발송 시각 |
 | created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
 

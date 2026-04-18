@@ -170,13 +170,20 @@ argocd-image-updater.argoproj.io/image-list: >-
   ...
 argocd-image-updater.argoproj.io/auth.update-strategy: newest-build
 argocd-image-updater.argoproj.io/auth.ignore-tags: latest
-argocd-image-updater.argoproj.io/write-back-method: argocd
+argocd-image-updater.argoproj.io/write-back-method: git
+argocd-image-updater.argoproj.io/git-branch: main
+argocd-image-updater.argoproj.io/write-back-target: kustomization:./k8s/overlays/prod
 ```
 
 - **전략**: `newest-build` — 이미지 `createdAt` 기준 최신 태그 자동 선택
 - **무시**: `:latest` 태그 (mutable이므로 버전 추적 불가)
 - **추적**: `:SHA` 태그 (immutable, rollback 가능)
-- **write-back**: `argocd` 모드 — manifest 레포에 `.argocd-source` 파일 자동 생성
+- **write-back**: `git` 모드 — kustomization.yaml 의 newTag 를 직접 git push (이전 `argocd` 모드는 디스크 비영속 → 동일 tag 다른 digest 반복 drift 유발)
+- **선행 조건**: argocd namespace 의 `argocd-image-updater-secret` 에 git-credentials 주입 필수
+  ```bash
+  kubectl -n argocd patch secret argocd-image-updater-secret --type merge -p \
+    '{"stringData":{"git-credentials":"https://<USER>:<PAT>@github.com"}}'
+  ```
 
 ### 배포 소요 시간
 

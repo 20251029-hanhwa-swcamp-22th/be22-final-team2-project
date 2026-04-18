@@ -229,7 +229,8 @@ CREATE TABLE pi_items (
 CREATE TABLE purchase_orders (
     po_id BIGINT NOT NULL AUTO_INCREMENT,
     po_code VARCHAR(30) NOT NULL,
-    pi_id BIGINT,
+    -- 엔티티 PurchaseOrder.piId 는 String 으로 proforma_invoices.pi_code 를 저장한다.
+    pi_id VARCHAR(30),
     po_issue_date DATE NOT NULL,
     client_id INT NOT NULL,
     currency_id INT NOT NULL,
@@ -521,7 +522,8 @@ ALTER TABLE proforma_invoices ADD CONSTRAINT fk_pi_client FOREIGN KEY (client_id
 ALTER TABLE proforma_invoices ADD CONSTRAINT fk_pi_currency FOREIGN KEY (currency_id) REFERENCES currencies (currency_id);
 ALTER TABLE proforma_invoices ADD CONSTRAINT fk_pi_manager FOREIGN KEY (manager_id) REFERENCES users (user_id);
 
-ALTER TABLE purchase_orders ADD CONSTRAINT fk_po_pi FOREIGN KEY (pi_id) REFERENCES proforma_invoices (pi_id);
+-- pi_id 는 VARCHAR(30) 로 proforma_invoices.pi_code (UNIQUE) 를 참조한다.
+ALTER TABLE purchase_orders ADD CONSTRAINT fk_po_pi FOREIGN KEY (pi_id) REFERENCES proforma_invoices (pi_code);
 ALTER TABLE purchase_orders ADD CONSTRAINT fk_po_client FOREIGN KEY (client_id) REFERENCES clients (client_id);
 ALTER TABLE purchase_orders ADD CONSTRAINT fk_po_currency FOREIGN KEY (currency_id) REFERENCES currencies (currency_id);
 ALTER TABLE purchase_orders ADD CONSTRAINT fk_po_manager FOREIGN KEY (manager_id) REFERENCES users (user_id);
