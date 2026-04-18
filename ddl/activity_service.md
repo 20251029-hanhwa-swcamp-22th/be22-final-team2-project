@@ -144,7 +144,7 @@
 |------|------|------|------|
 | email_log_attachment_id | INT | PK, AUTO_INCREMENT | |
 | email_log_id | INT | FK→email_logs, NOT NULL | 소속 메일 |
-| email_attachment_filename | VARCHAR(255) | NOT NULL | 첨부파일명 (예: PI2025001.pdf) |
+| email_attachment_filename | VARCHAR(255) | NOT NULL | 첨부파일명 (예: PI250001.pdf) |
 
 **사용 화면**: EmailListPage에서 첨부파일 클릭 시 PDF 프리뷰 모달 표시
 

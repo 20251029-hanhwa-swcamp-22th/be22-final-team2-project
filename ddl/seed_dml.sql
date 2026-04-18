@@ -91,40 +91,40 @@ INSERT INTO teams (team_id, team_name, department_id, created_at) VALUES
 -- ============================================================
 INSERT INTO users (user_id, employee_no, user_name, user_email, user_pw, user_role, team_id, position_id, user_status, created_at, updated_at) VALUES
 -- admin
-(1, 'EMP0001', '최관리', 'admin@hanwha.com',
+(1, '26030101', '최관리', 'admin@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'admin', 7, 7, 'active', NOW(), NOW()),
 -- 영업부
-(2, 'EMP0002', '김영업', 'kim.sales@hanwha.com',
+(2, '26030102', '김영업', 'kim.sales@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'sales', 1, 5, 'active', NOW(), NOW()),
-(3, 'EMP0003', '이영업', 'lee.sales@hanwha.com',
+(3, '26030103', '이영업', 'lee.sales@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'sales', 1, 3, 'active', NOW(), NOW()),
-(4, 'EMP0004', '박영업', 'park.sales@hanwha.com',
+(4, '26030104', '박영업', 'park.sales@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'sales', 2, 3, 'active', NOW(), NOW()),
-(5, 'EMP0005', '최영업', 'choi.sales@hanwha.com',
+(5, '26030105', '최영업', 'choi.sales@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'sales', 2, 2, 'active', NOW(), NOW()),
 -- 생산부
-(6, 'EMP0006', '김생산', 'kim.prod@hanwha.com',
+(6, '26030201', '김생산', 'kim.prod@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'production', 3, 5, 'active', NOW(), NOW()),
-(7, 'EMP0007', '최생산', 'choi.prod@hanwha.com',
+(7, '26030202', '최생산', 'choi.prod@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'production', 3, 3, 'active', NOW(), NOW()),
-(8, 'EMP0008', '박생산', 'park.prod@hanwha.com',
+(8, '26030203', '박생산', 'park.prod@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'production', 4, 2, 'active', NOW(), NOW()),
 -- 출하부
-(9,  'EMP0009', '정출하', 'jung.ship@hanwha.com',
+(9,  '26030301', '정출하', 'jung.ship@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'shipping', 5, 5, 'active', NOW(), NOW()),
-(10, 'EMP0010', '이출하', 'lee.ship@hanwha.com',
+(10, '26030302', '이출하', 'lee.ship@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'shipping', 5, 3, 'active', NOW(), NOW()),
-(11, 'EMP0011', '박출하', 'park.ship@hanwha.com',
+(11, '26030303', '박출하', 'park.ship@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'shipping', 6, 2, 'active', NOW(), NOW());
 
@@ -220,11 +220,11 @@ INSERT INTO items (item_id, item_code, item_name, item_name_kr, item_spec, item_
 -- 10. PI — 견적송장
 -- ============================================================
 INSERT INTO proforma_invoices (pi_id, pi_code, pi_issue_date, client_id, currency_id, manager_id, pi_status, pi_delivery_date, pi_incoterms_code, pi_named_place, pi_total_amount, pi_client_name, pi_client_address, pi_country, pi_currency_code, pi_manager_name, created_at, updated_at) VALUES
-(1, 'PI2025001', '2025-03-01', 1, 2, 2, 'confirmed', '2025-04-15', 'FOB', 'Busan Port',
+(1, 'PI250001', '2025-03-01', 1, 2, 2, 'confirmed', '2025-04-15', 'FOB', 'Busan Port',
  15000.00, 'Acme Global Inc.', '100 Sunset Blvd, Los Angeles, CA 90028, USA', 'United States', 'USD', '김영업', NOW(), NOW()),
-(2, 'PI2025002', '2025-03-05', 2, 3, 3, 'confirmed', '2025-04-20', 'CIF', 'Tokyo Port',
+(2, 'PI250002', '2025-03-05', 2, 3, 3, 'confirmed', '2025-04-20', 'CIF', 'Tokyo Port',
  510000.00, 'Tokyo Trading Co.', '2-1 Marunouchi, Chiyoda-ku, Tokyo, Japan', 'Japan', 'JPY', '이영업', NOW(), NOW()),
-(3, 'PI2025003', '2025-03-10', 3, 5, 4, 'draft', '2025-05-01', 'FOB', 'Shanghai Port',
+(3, 'PI250003', '2025-03-10', 3, 5, 4, 'draft', '2025-05-01', 'FOB', 'Shanghai Port',
  48000.00, 'Shanghai Imports Ltd.', '888 Nanjing Rd, Huangpu, Shanghai, China', 'China', 'CNY', '박영업', NOW(), NOW());
 
 INSERT INTO pi_items (pi_item_id, pi_id, item_id, pi_item_name, pi_item_qty, pi_item_unit, pi_item_unit_price, pi_item_amount, pi_item_remark) VALUES
@@ -243,9 +243,9 @@ INSERT INTO pi_items (pi_item_id, pi_id, item_id, pi_item_name, pi_item_qty, pi_
 -- pi_id 는 VARCHAR(30) 으로 proforma_invoices.pi_code 를 참조 (fk_po_pi → pi_code).
 -- po_delivery_date_override NOT NULL 필수.
 INSERT INTO purchase_orders (po_id, po_code, pi_id, po_issue_date, client_id, currency_id, manager_id, po_status, po_delivery_date, po_incoterms_code, po_named_place, po_delivery_date_override, po_total_amount, po_client_name, po_client_address, po_country, po_currency_code, po_manager_name, created_at, updated_at) VALUES
-(1, 'PO2025001', 'PI2025001', '2025-03-15', 1, 2, 2, 'confirmed', '2025-04-15', 'FOB', 'Busan Port', FALSE,
+(1, 'PO250001', 'PI250001', '2025-03-15', 1, 2, 2, 'confirmed', '2025-04-15', 'FOB', 'Busan Port', FALSE,
  15000.00, 'Acme Global Inc.', '100 Sunset Blvd, Los Angeles, CA 90028, USA', 'United States', 'USD', '김영업', NOW(), NOW()),
-(2, 'PO2025002', 'PI2025002', '2025-03-20', 2, 3, 3, 'confirmed', '2025-04-20', 'CIF', 'Tokyo Port', FALSE,
+(2, 'PO250002', 'PI250002', '2025-03-20', 2, 3, 3, 'confirmed', '2025-04-20', 'CIF', 'Tokyo Port', FALSE,
  510000.00, 'Tokyo Trading Co.', '2-1 Marunouchi, Chiyoda-ku, Tokyo, Japan', 'Japan', 'JPY', '이영업', NOW(), NOW());
 
 INSERT INTO po_items (po_item_id, po_id, item_id, po_item_name, po_item_qty, po_item_unit, po_item_unit_price, po_item_amount, po_item_remark) VALUES
@@ -260,12 +260,12 @@ INSERT INTO po_items (po_item_id, po_id, item_id, po_item_name, po_item_qty, po_
 -- 12. CI / PL — 상업송장 / 포장명세서
 -- ============================================================
 INSERT INTO commercial_invoices (ci_id, ci_code, po_id, ci_invoice_date, client_id, currency_id, ci_total_amount, ci_status, ci_client_name, ci_client_address, ci_country, ci_currency_code, ci_payment_terms, ci_port_of_discharge, ci_buyer, created_at) VALUES
-(1, 'CI2025001', 1, '2025-04-10', 1, 2, 15000.00, 'issued',
+(1, 'CI250001', 1, '2025-04-10', 1, 2, 15000.00, 'issued',
  'Acme Global Inc.', '100 Sunset Blvd, Los Angeles, CA 90028, USA', 'United States', 'USD',
  'T/T 30 days', 'Los Angeles', 'John Smith', NOW());
 
 INSERT INTO packing_lists (pl_id, pl_code, po_id, pl_invoice_date, client_id, pl_gross_weight, pl_status, pl_client_name, pl_client_address, pl_country, pl_payment_terms, pl_port_of_discharge, pl_buyer, created_at) VALUES
-(1, 'PL2025001', 1, '2025-04-10', 1, 2485.00, 'issued',
+(1, 'PL250001', 1, '2025-04-10', 1, 2485.00, 'issued',
  'Acme Global Inc.', '100 Sunset Blvd, Los Angeles, CA 90028, USA', 'United States',
  'T/T 30 days', 'Los Angeles', 'John Smith', NOW());
 
@@ -273,12 +273,12 @@ INSERT INTO packing_lists (pl_id, pl_code, po_id, pl_invoice_date, client_id, pl
 -- 13. 생산지시서 / 출하지시서
 -- ============================================================
 INSERT INTO production_orders (production_order_id, production_order_code, po_id, production_issue_date, client_id, manager_id, production_status, production_due_date, production_client_name, production_country, production_manager_name, production_item_name, created_at, updated_at) VALUES
-(1, 'PRD2025001', 1, '2025-03-20', 1, 6, 'completed',  '2025-04-05', 'Acme Global Inc.',   'United States', '김생산', 'Office Desk A1 외 3건', NOW(), NOW()),
-(2, 'PRD2025002', 2, '2025-03-25', 2, 7, 'in_progress','2025-04-10', 'Tokyo Trading Co.',  'Japan',         '최생산', 'Meeting Table D4 외 1건', NOW(), NOW());
+(1, 'MO250001', 1, '2025-03-20', 1, 6, 'completed',  '2025-04-05', 'Acme Global Inc.',   'United States', '김생산', 'Office Desk A1 외 3건', NOW(), NOW()),
+(2, 'MO250002', 2, '2025-03-25', 2, 7, 'in_progress','2025-04-10', 'Tokyo Trading Co.',  'Japan',         '최생산', 'Meeting Table D4 외 1건', NOW(), NOW());
 
 INSERT INTO shipment_orders (shipment_order_id, shipment_order_code, po_id, shipment_issue_date, client_id, manager_id, shipment_status, shipment_due_date, shipment_client_name, shipment_country, shipment_manager_name, shipment_item_name, created_at, updated_at) VALUES
-(1, 'SH2025001', 1, '2025-04-06', 1, 9,  'completed', '2025-04-15', 'Acme Global Inc.',  'United States', '정출하', 'Office Desk A1 외 3건', NOW(), NOW()),
-(2, 'SH2025002', 2, '2025-04-11', 2, 10, 'preparing', '2025-04-20', 'Tokyo Trading Co.', 'Japan',         '이출하', 'Meeting Table D4 외 1건', NOW(), NOW());
+(1, 'SO250001', 1, '2025-04-06', 1, 9,  'completed', '2025-04-15', 'Acme Global Inc.',  'United States', '정출하', 'Office Desk A1 외 3건', NOW(), NOW()),
+(2, 'SO250002', 2, '2025-04-11', 2, 10, 'preparing', '2025-04-20', 'Tokyo Trading Co.', 'Japan',         '이출하', 'Meeting Table D4 외 1건', NOW(), NOW());
 
 -- ============================================================
 -- 14. 수금현황 (collections) / 출하현황 (shipments)
@@ -295,19 +295,19 @@ INSERT INTO shipments (shipment_id, po_id, shipment_order_id, client_id, shipmen
 -- 15. 결재 요청 (approval_requests)
 -- ============================================================
 INSERT INTO approval_requests (approval_request_id, approval_document_type, approval_document_id, approval_request_type, approval_requester_id, approval_approver_id, approval_comment, approval_status, approval_requested_at, approval_reviewed_at) VALUES
-(1, 'PI', 'PI2025001', 'registration', 2, 1, 'Acme PI 등록 승인 요청', 'approved', '2025-03-01 10:00:00', '2025-03-01 14:00:00'),
-(2, 'PO', 'PO2025001', 'registration', 2, 1, 'Acme PO 등록 승인 요청', 'approved', '2025-03-15 10:00:00', '2025-03-15 15:00:00'),
-(3, 'PI', 'PI2025003', 'registration', 4, 1, 'Shanghai PI 등록 승인 요청', 'pending',  '2025-03-10 11:00:00', NULL);
+(1, 'PI', 'PI250001', 'registration', 2, 1, 'Acme PI 등록 승인 요청', 'approved', '2025-03-01 10:00:00', '2025-03-01 14:00:00'),
+(2, 'PO', 'PO250001', 'registration', 2, 1, 'Acme PO 등록 승인 요청', 'approved', '2025-03-15 10:00:00', '2025-03-15 15:00:00'),
+(3, 'PI', 'PI250003', 'registration', 4, 1, 'Shanghai PI 등록 승인 요청', 'pending',  '2025-03-10 11:00:00', NULL);
 
 -- ============================================================
 -- 16. 활동 (activities) — 기록
 -- ============================================================
 INSERT INTO activities (activity_id, client_id, po_id, activity_author_id, activity_date, activity_type, activity_title, activity_content, activity_priority, activity_schedule_from, activity_schedule_to, created_at, updated_at) VALUES
-(1, 1, 'PO2025001', 2, '2025-03-05', 'meeting',  'Acme 첫 미팅',        'Acme 본사 방문하여 요구사항 논의',                   NULL, NULL, NULL, NOW(), NOW()),
-(2, 1, 'PO2025001', 2, '2025-03-25', 'issue',    '통관 지연 리스크',    'LA 세관 통관 지연 이슈 — 대비책 필요',                'high', NULL, NULL, NOW(), NOW()),
-(3, 1, 'PO2025001', 2, '2025-04-02', 'memo',     '생산 진행 확인',      '생산팀과 일정 확인 완료',                             NULL, NULL, NULL, NOW(), NOW()),
-(4, 2, 'PO2025002', 3, '2025-03-10', 'meeting',  '도쿄트레이딩 방문',   '신제품 소개 및 견적 논의',                            NULL, NULL, NULL, NOW(), NOW()),
-(5, 2, 'PO2025002', 3, '2025-04-15', 'schedule', '도쿄 출장 예정',      '최종 계약 체결을 위한 출장',                         'normal', '2025-04-20', '2025-04-22', NOW(), NOW()),
+(1, 1, 'PO250001', 2, '2025-03-05', 'meeting',  'Acme 첫 미팅',        'Acme 본사 방문하여 요구사항 논의',                   NULL, NULL, NULL, NOW(), NOW()),
+(2, 1, 'PO250001', 2, '2025-03-25', 'issue',    '통관 지연 리스크',    'LA 세관 통관 지연 이슈 — 대비책 필요',                'high', NULL, NULL, NOW(), NOW()),
+(3, 1, 'PO250001', 2, '2025-04-02', 'memo',     '생산 진행 확인',      '생산팀과 일정 확인 완료',                             NULL, NULL, NULL, NOW(), NOW()),
+(4, 2, 'PO250002', 3, '2025-03-10', 'meeting',  '도쿄트레이딩 방문',   '신제품 소개 및 견적 논의',                            NULL, NULL, NULL, NOW(), NOW()),
+(5, 2, 'PO250002', 3, '2025-04-15', 'schedule', '도쿄 출장 예정',      '최종 계약 체결을 위한 출장',                         'normal', '2025-04-20', '2025-04-22', NOW(), NOW()),
 (6, 3, NULL,         4, '2025-03-08', 'meeting', 'Shanghai 화상회의',   '온라인 화상회의 진행',                                NULL, NULL, NULL, NOW(), NOW());
 
 -- ============================================================
@@ -337,9 +337,9 @@ INSERT INTO contacts (contact_id, writer_id, contact_name, contact_position, con
 -- 18. 이메일 발송 이력
 -- ============================================================
 INSERT INTO email_logs (email_log_id, client_id, po_id, email_title, email_recipient_name, email_recipient_email, email_sender_id, email_status, email_sent_at, created_at) VALUES
-(1, 1, 'PO2025001', 'PI PO2025001 송부 드립니다', 'John Smith',    'john.smith@acme-global.com',  2, 'sent', '2025-03-02 09:00:00', NOW()),
-(2, 1, 'PO2025001', 'CI/PL 송부',                 'John Smith',    'john.smith@acme-global.com',  2, 'sent', '2025-04-10 14:00:00', NOW()),
-(3, 2, 'PO2025002', 'PI PI2025002 안내',          '타나카 히로시', 'tanaka@tokyo-trading.co.jp',  3, 'sent', '2025-03-06 10:00:00', NOW());
+(1, 1, 'PO250001', 'PI PO250001 송부 드립니다', 'John Smith',    'john.smith@acme-global.com',  2, 'sent', '2025-03-02 09:00:00', NOW()),
+(2, 1, 'PO250001', 'CI/PL 송부',                 'John Smith',    'john.smith@acme-global.com',  2, 'sent', '2025-04-10 14:00:00', NOW()),
+(3, 2, 'PO250002', 'PI PI250002 안내',          '타나카 히로시', 'tanaka@tokyo-trading.co.jp',  3, 'sent', '2025-03-06 10:00:00', NOW());
 
 INSERT INTO email_log_types (email_log_type_id, email_log_id, email_doc_type) VALUES
 (1, 1, 'PI'),
@@ -348,17 +348,17 @@ INSERT INTO email_log_types (email_log_type_id, email_log_id, email_doc_type) VA
 (4, 3, 'PI');
 
 INSERT INTO email_log_attachments (email_log_attachment_id, email_log_id, email_attachment_filename, email_attachment_s3_key) VALUES
-(1, 1, 'PI2025001.pdf',       'email/2025/03/PI2025001.pdf'),
-(2, 2, 'CI2025001.pdf',       'email/2025/04/CI2025001.pdf'),
-(3, 2, 'PL2025001.pdf',       'email/2025/04/PL2025001.pdf'),
-(4, 3, 'PI2025002.pdf',       'email/2025/03/PI2025002.pdf');
+(1, 1, 'PI250001.pdf',       'email/2025/03/PI250001.pdf'),
+(2, 2, 'CI250001.pdf',       'email/2025/04/CI250001.pdf'),
+(3, 2, 'PL250001.pdf',       'email/2025/04/PL250001.pdf'),
+(4, 3, 'PI250002.pdf',       'email/2025/03/PI250002.pdf');
 
 -- ============================================================
 -- 19. 기록패키지 (activity_packages)
 -- ============================================================
 INSERT INTO activity_packages (package_id, package_title, package_description, po_id, creator_id, date_from, date_to, created_at, updated_at) VALUES
-(1, 'Acme PO2025001 진행내역', 'Acme 발주 건 초기 미팅부터 통관 이슈까지', 'PO2025001', 2, '2025-03-01', '2025-04-15', NOW(), NOW()),
-(2, 'Tokyo Trading 상담 이력', '도쿄트레이딩 신규 개발 과정',              'PO2025002', 3, '2025-03-01', '2025-04-20', NOW(), NOW());
+(1, 'Acme PO250001 진행내역', 'Acme 발주 건 초기 미팅부터 통관 이슈까지', 'PO250001', 2, '2025-03-01', '2025-04-15', NOW(), NOW()),
+(2, 'Tokyo Trading 상담 이력', '도쿄트레이딩 신규 개발 과정',              'PO250002', 3, '2025-03-01', '2025-04-20', NOW(), NOW());
 
 INSERT INTO activity_package_items (package_item_id, package_id, activity_id) VALUES
 (1, 1, 1),

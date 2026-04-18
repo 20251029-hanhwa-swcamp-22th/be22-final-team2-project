@@ -220,7 +220,7 @@ erDiagram
     %% ============================================================
 
     proforma_invoices {
-        VARCHAR pi_id PK "문서번호 PI2025001"
+        VARCHAR pi_id PK "문서번호 PI250001"
         DATE pi_issue_date
         INT client_id FK "cross: master.clients"
         INT currency_id FK "cross: master.currencies"
@@ -261,7 +261,7 @@ erDiagram
     }
 
     purchase_orders {
-        VARCHAR po_id PK "문서번호 PO2025001"
+        VARCHAR po_id PK "문서번호 PO250001"
         VARCHAR pi_id FK
         DATE po_issue_date
         INT client_id FK "cross: master.clients"
@@ -305,7 +305,7 @@ erDiagram
     }
 
     commercial_invoices {
-        VARCHAR ci_id PK "문서번호 CI2025001"
+        VARCHAR ci_id PK "문서번호 CI250001"
         VARCHAR po_id FK
         DATE ci_invoice_date
         INT client_id FK "cross: master.clients"
@@ -325,7 +325,7 @@ erDiagram
     }
 
     packing_lists {
-        VARCHAR pl_id PK "문서번호 PL2025001"
+        VARCHAR pl_id PK "문서번호 PL250001"
         VARCHAR po_id FK
         DATE pl_invoice_date
         INT client_id FK "cross: master.clients"
@@ -343,7 +343,7 @@ erDiagram
     }
 
     production_orders {
-        VARCHAR production_order_id PK "문서번호 PRD2025001"
+        VARCHAR production_order_id PK "문서번호 MO250001"
         VARCHAR po_id FK
         DATE production_issue_date
         INT client_id FK "cross: master.clients"
@@ -360,7 +360,7 @@ erDiagram
     }
 
     shipment_orders {
-        VARCHAR shipment_order_id PK "문서번호 SH2025001"
+        VARCHAR shipment_order_id PK "문서번호 SO250001"
         VARCHAR po_id FK
         DATE shipment_issue_date
         INT client_id FK "cross: master.clients"

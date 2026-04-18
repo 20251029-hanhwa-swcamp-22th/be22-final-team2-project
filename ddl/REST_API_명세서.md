@@ -1300,7 +1300,7 @@ Authorization: Bearer {accessToken}
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
 | `clientId` | `Integer` | O | 거래처 ID |
-| `poId` | `String` | - | PO ID (연관 주문이 있는 경우, 예: "PO2025001") |
+| `poId` | `String` | - | PO ID (연관 주문이 있는 경우, 예: "PO250001") |
 | `type` | `String` | O | 활동 유형 (`미팅/협의` / `이슈` / `메모/노트` / `일정`) |
 | `title` | `String` | O | 활동 제목 |
 | `content` | `String` | - | 활동 내용 |
@@ -1496,7 +1496,7 @@ Authorization: Bearer {accessToken}
     "packageId": 1,
     "title": "2025년 1월 영업활동 보고",
     "description": "1월 주요 거래처 미팅 및 이슈 정리",
-    "poId": "PO2025001",
+    "poId": "PO250001",
     "creatorId": 3,
     "creatorName": "박영업",
     "activityIds": [1, 2, 3],
@@ -1529,7 +1529,7 @@ Authorization: Bearer {accessToken}
   "packageId": 1,
   "title": "2025년 1월 영업활동 보고",
   "description": "1월 주요 거래처 미팅 및 이슈 정리",
-  "poId": "PO2025001",
+  "poId": "PO250001",
   "creatorId": 3,
   "creatorName": "박영업",
   "activityIds": [1, 2, 3],
@@ -1554,7 +1554,7 @@ Authorization: Bearer {accessToken}
 |------|------|------|------|
 | `title` | `String` | O | 패키지 제목 |
 | `description` | `String` | - | 설명 |
-| `poId` | `String` | - | 관련 PO ID (예: "PO2025001") |
+| `poId` | `String` | - | 관련 PO ID (예: "PO250001") |
 | `creatorId` | `Integer` | O | 생성자(사용자) ID |
 | `activityIds` | `Integer[]` | O | 포함할 활동기록 ID 목록 |
 | `viewers` | `Integer[]` | - | 열람 가능한 사용자 ID 목록 |
@@ -1563,7 +1563,7 @@ Authorization: Bearer {accessToken}
 {
   "title": "XYZ Corp 거래 활동 요약",
   "description": "PO-2026-005 관련 활동 정리",
-  "poId": "PO2025005",
+  "poId": "PO250005",
   "creatorId": 1,
   "activityIds": [10, 11, 12],
   "viewers": [1, 2, 3]
@@ -1749,7 +1749,7 @@ Authorization: Bearer {accessToken}
   {
     "id": 1,
     "poNo": "PO-2026-001",
-    "piId": "PI2025001",
+    "piId": "PI250001",
     "clientId": 1,
     "clientName": "ABC Trading",
     "poDate": "2026-03-05",
@@ -1791,7 +1791,7 @@ Authorization: Bearer {accessToken}
 
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| `piId` | `String` | - | 참조 PI ID (예: "PI2025001") |
+| `piId` | `String` | - | 참조 PI ID (예: "PI250001") |
 | `clientId` | `Integer` | O | 거래처 ID |
 | `managerId` | `Integer` | O | 담당자 user_id |
 | `poDate` | `String (date)` | O | PO 발행일 |
@@ -1855,7 +1855,7 @@ Authorization: Bearer {accessToken}
 {
   "id": 1,
   "ciNo": "CI-2026-001",
-  "poId": "PO2025001",
+  "poId": "PO250001",
   "clientId": 1,
   "ciDate": "2026-04-15",
   "totalAmount": 15000.00,
@@ -1884,8 +1884,8 @@ Authorization: Bearer {accessToken}
 {
   "id": 1,
   "plNo": "PL-2026-001",
-  "ciId": "CI2025001",
-  "poId": "PO2025001",
+  "ciId": "CI250001",
+  "poId": "PO250001",
   "plDate": "2026-04-15",
   "totalWeight": 2550.000,
   "totalPackages": 10,
@@ -1914,7 +1914,7 @@ Authorization: Bearer {accessToken}
   {
     "id": 1,
     "productionOrderNo": "PRD-2026-001",
-    "poId": "PO2025001",
+    "poId": "PO250001",
     "poNo": "PO-2026-001",
     "orderDate": "2026-03-10",
     "dueDate": "2026-04-10",
@@ -1954,7 +1954,7 @@ PO를 기반으로 생산지시서를 생성한다.
 
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| `poId` | `String` | O | PO ID (예: "PO2025001") |
+| `poId` | `String` | O | PO ID (예: "PO250001") |
 | `managerId` | `Integer` | O | 담당자 user_id |
 | `orderDate` | `String (date)` | O | 지시일 |
 | `dueDate` | `String (date)` | O | 납기일 |
@@ -2001,7 +2001,7 @@ PO를 기반으로 생산지시서를 생성한다.
   {
     "id": 1,
     "shipmentOrderNo": "SO-2026-001",
-    "poId": "PO2025001",
+    "poId": "PO250001",
     "poNo": "PO-2026-001",
     "shipmentDate": "2026-04-20",
     "portOfLoadingId": 1,
@@ -2042,7 +2042,7 @@ PO를 기반으로 생산지시서를 생성한다.
 
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| `poId` | `String` | O | PO ID (예: "PO2025001") |
+| `poId` | `String` | O | PO ID (예: "PO250001") |
 | `managerId` | `Integer` | O | 담당자 user_id |
 | `shipmentDate` | `String (date)` | O | 출하 예정일 |
 | `portOfLoadingId` | `Integer` | - | 선적항 ID |
@@ -2156,7 +2156,7 @@ PO를 기반으로 생산지시서를 생성한다.
 [
   {
     "id": 1,
-    "poId": "PO2025001",
+    "poId": "PO250001",
     "poNo": "PO-2026-001",
     "clientId": 1,
     "clientName": "ABC Trading",
@@ -2221,7 +2221,7 @@ PO를 기반으로 생산지시서를 생성한다.
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
 | `documentType` | `String` | O | 문서 유형 (`PI` / `PO`) |
-| `documentId` | `String` | O | 문서 ID (예: "PI2025001", "PO2025001") |
+| `documentId` | `String` | O | 문서 ID (예: "PI250001", "PO250001") |
 | `requesterId` | `Integer` | O | 요청자(사용자) ID |
 | `approverId` | `Integer` | O | 결재자(사용자) ID |
 | `comment` | `String` | - | 요청 사유 |
@@ -2229,7 +2229,7 @@ PO를 기반으로 생산지시서를 생성한다.
 ```json
 {
   "documentType": "PI",
-  "documentId": "PI2025001",
+  "documentId": "PI250001",
   "requesterId": 2,
   "approverId": 1,
   "comment": "PI-2026-001 결재 요청드립니다."
@@ -2242,7 +2242,7 @@ PO를 기반으로 생산지시서를 생성한다.
 {
   "id": 1,
   "documentType": "PI",
-  "documentId": "PI2025001",
+  "documentId": "PI250001",
   "requesterId": 2,
   "approverId": 1,
   "status": "대기",

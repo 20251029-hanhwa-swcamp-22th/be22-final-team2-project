@@ -1,17 +1,17 @@
 -- ============================================================
 -- Document Service DDL (v4)
 -- 서비스 설명: 무역 문서(견적~출하) 및 현황 관련 테이블
---   - proforma_invoices: 견적송장 (PI)       — PK: PI2025001
+--   - proforma_invoices: 견적송장 (PI)       — PK: PI250001
 --   - pi_items: PI 품목
---   - purchase_orders: 발주서 (PO)           — PK: PO2025001
+--   - purchase_orders: 발주서 (PO)           — PK: PO250001
 --   - po_items: PO 품목
---   - commercial_invoices: 상업송장 (CI)     — PK: CI2025001
---   - packing_lists: 포장명세서 (PL)         — PK: PL2025001
---   - production_orders: 생산지시서          — PK: PRD2025001
---   - shipment_orders: 출하지시서            — PK: SH2025001
+--   - commercial_invoices: 상업송장 (CI)     — PK: CI250001
+--   - packing_lists: 포장명세서 (PL)         — PK: PL250001
+--   - production_orders: 생산지시서          — PK: MO250001
+--   - shipment_orders: 출하지시서            — PK: SO250001
 --   - approval_requests: 결재 요청
 --   - collections: 매출·수금 현황
---   - shipments: 출하현황                    — PK: SHP2025001
+--   - shipments: 출하현황                    — PK: BIGINT AUTO_INCREMENT (문서번호 없음)
 -- Engine: InnoDB | Charset: utf8mb4_unicode_ci
 -- ============================================================
 
@@ -33,7 +33,7 @@ DROP TABLE IF EXISTS proforma_invoices;
 -- ------------------------------------------------------------
 CREATE TABLE proforma_invoices (
     pi_id                   BIGINT          NOT NULL AUTO_INCREMENT,    -- 내부 PK
-    pi_code                 VARCHAR(30)     NOT NULL,                   -- 문서번호: PI2025001
+    pi_code                 VARCHAR(30)     NOT NULL,                   -- 문서번호: PI250001
     pi_issue_date           DATE            NOT NULL,
     client_id               INT             NOT NULL,                   -- REFERENCES master.clients(id)
     currency_id             INT             NOT NULL,                   -- REFERENCES master.currencies(id)
@@ -101,7 +101,7 @@ CREATE TABLE pi_items (
 -- ------------------------------------------------------------
 CREATE TABLE purchase_orders (
     po_id                       BIGINT          NOT NULL AUTO_INCREMENT, -- 내부 PK
-    po_code                     VARCHAR(30)     NOT NULL,                -- 문서번호: PO2025001
+    po_code                     VARCHAR(30)     NOT NULL,                -- 문서번호: PO250001
     -- 엔티티 PurchaseOrder.piId 는 String 으로 선언돼 proforma_invoices.pi_code 를 저장한다.
     -- 과거 BIGINT FK 로 잘못 선언돼 drift 가 있었고, 운영 DB 는 이미 VARCHAR 로 수렴된 상태.
     -- 엔티티 기준으로 DDL 을 맞춘다. FK 는 pi_code (UNIQUE) 로 재정의 가능하되 현재는 생략.
@@ -179,7 +179,7 @@ CREATE TABLE po_items (
 -- ------------------------------------------------------------
 CREATE TABLE commercial_invoices (
     ci_id                 BIGINT          NOT NULL AUTO_INCREMENT,   -- 내부 PK
-    ci_code               VARCHAR(30)     NOT NULL,                  -- 문서번호: CI2025001
+    ci_code               VARCHAR(30)     NOT NULL,                  -- 문서번호: CI250001
     po_id                 BIGINT          NOT NULL,                  -- purchase_orders.po_id FK
     ci_invoice_date       DATE            NOT NULL,
     client_id             INT             NOT NULL,
@@ -212,7 +212,7 @@ CREATE TABLE commercial_invoices (
 -- ------------------------------------------------------------
 CREATE TABLE packing_lists (
     pl_id                 BIGINT          NOT NULL AUTO_INCREMENT,   -- 내부 PK
-    pl_code               VARCHAR(30)     NOT NULL,                  -- 문서번호: PL2025001
+    pl_code               VARCHAR(30)     NOT NULL,                  -- 문서번호: PL250001
     po_id                 BIGINT          NOT NULL,                  -- purchase_orders.po_id FK
     pl_invoice_date       DATE            NOT NULL,
     client_id             INT             NOT NULL,
@@ -242,7 +242,7 @@ CREATE TABLE packing_lists (
 -- ------------------------------------------------------------
 CREATE TABLE production_orders (
     production_order_id      BIGINT          NOT NULL AUTO_INCREMENT,   -- 내부 PK
-    production_order_code    VARCHAR(30)     NOT NULL,                  -- 문서번호: PRD2025001
+    production_order_code    VARCHAR(30)     NOT NULL,                  -- 문서번호: MO250001
     po_id                    BIGINT          NOT NULL,                  -- purchase_orders.po_id FK
     production_issue_date    DATE            NOT NULL,
     client_id                INT             NOT NULL,                  -- REFERENCES master.clients(id)
@@ -274,7 +274,7 @@ CREATE TABLE production_orders (
 -- ------------------------------------------------------------
 CREATE TABLE shipment_orders (
     shipment_order_id        BIGINT          NOT NULL AUTO_INCREMENT,   -- 내부 PK
-    shipment_order_code      VARCHAR(30)     NOT NULL,                  -- 문서번호: SH2025001
+    shipment_order_code      VARCHAR(30)     NOT NULL,                  -- 문서번호: SO250001
     po_id                    BIGINT          NOT NULL,                  -- purchase_orders.po_id FK
     shipment_issue_date      DATE            NOT NULL,
     client_id                INT             NOT NULL,                  -- REFERENCES master.clients(id)
