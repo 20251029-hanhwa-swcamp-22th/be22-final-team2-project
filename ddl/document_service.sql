@@ -38,7 +38,7 @@ CREATE TABLE proforma_invoices (
     client_id               INT             NOT NULL,                   -- REFERENCES master.clients(id)
     currency_id             INT             NOT NULL,                   -- REFERENCES master.currencies(id)
     manager_id              INT             NOT NULL,                   -- REFERENCES auth.users(id)
-    pi_status               ENUM('draft','confirmed','pending_approval','rejected','deletion_requested','registration_requested','modification_requested','cancelled')
+    pi_status               ENUM('draft','confirmed','pending_approval','rejected','deletion_requested','registration_requested','modification_requested','cancelled','deleted')
                                             NOT NULL DEFAULT 'draft',
     pi_delivery_date        DATE            NULL,
     pi_incoterms_code       VARCHAR(10)     NULL,
@@ -107,7 +107,7 @@ CREATE TABLE purchase_orders (
     client_id                   INT             NOT NULL,            -- REFERENCES master.clients(id)
     currency_id                 INT             NOT NULL,            -- REFERENCES master.currencies(id)
     manager_id                  INT             NOT NULL,            -- REFERENCES auth.users(id)
-    po_status                   ENUM('draft','confirmed','pending_approval','rejected','deletion_requested','registration_requested','modification_requested','cancelled')
+    po_status                   ENUM('draft','confirmed','pending_approval','rejected','deletion_requested','registration_requested','modification_requested','cancelled','deleted')
                                                 NOT NULL DEFAULT 'draft',
     po_delivery_date            DATE            NULL,
     po_incoterms_code           VARCHAR(10)     NULL,
