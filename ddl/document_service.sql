@@ -102,7 +102,10 @@ CREATE TABLE pi_items (
 CREATE TABLE purchase_orders (
     po_id                       BIGINT          NOT NULL AUTO_INCREMENT, -- 내부 PK
     po_code                     VARCHAR(30)     NOT NULL,                -- 문서번호: PO2025001
-    pi_id                       BIGINT          NULL,                    -- proforma_invoices.pi_id FK
+    -- 엔티티 PurchaseOrder.piId 는 String 으로 선언돼 proforma_invoices.pi_code 를 저장한다.
+    -- 과거 BIGINT FK 로 잘못 선언돼 drift 가 있었고, 운영 DB 는 이미 VARCHAR 로 수렴된 상태.
+    -- 엔티티 기준으로 DDL 을 맞춘다. FK 는 pi_code (UNIQUE) 로 재정의 가능하되 현재는 생략.
+    pi_id                       VARCHAR(30)     NULL,                    -- proforma_invoices.pi_code 저장
     po_issue_date               DATE            NOT NULL,
     client_id                   INT             NOT NULL,            -- REFERENCES master.clients(id)
     currency_id                 INT             NOT NULL,            -- REFERENCES master.currencies(id)
@@ -147,7 +150,9 @@ CREATE TABLE purchase_orders (
     INDEX idx_po_manager_id (manager_id),
     INDEX idx_po_pi_id (pi_id),
     INDEX idx_po_approval_status (po_approval_status),
-    CONSTRAINT fk_po_pi FOREIGN KEY (pi_id) REFERENCES proforma_invoices (pi_id)
+    -- 과거 BIGINT 기반 FK. 현재 pi_id 는 VARCHAR 이므로 FK 는 제거.
+    -- 필요 시 REFERENCES proforma_invoices (pi_code) 로 재정의 가능.
+    CONSTRAINT fk_po_pi FOREIGN KEY (pi_id) REFERENCES proforma_invoices (pi_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
