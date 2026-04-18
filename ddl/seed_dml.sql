@@ -91,40 +91,40 @@ INSERT INTO teams (team_id, team_name, department_id, created_at) VALUES
 -- ============================================================
 INSERT INTO users (user_id, employee_no, user_name, user_email, user_pw, user_role, team_id, position_id, user_status, created_at, updated_at) VALUES
 -- admin
-(1, 'EMP0001', '관리자', 'admin@salesboost.co.kr',
+(1, 'EMP0001', '최관리', 'admin@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'admin', 7, 7, 'active', NOW(), NOW()),
 -- 영업부
-(2, 'EMP0002', '김영업', 'sales1@salesboost.co.kr',
+(2, 'EMP0002', '김영업', 'kim.sales@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'sales', 1, 5, 'active', NOW(), NOW()),
-(3, 'EMP0003', '이영업', 'sales2@salesboost.co.kr',
+(3, 'EMP0003', '이영업', 'lee.sales@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'sales', 1, 3, 'active', NOW(), NOW()),
-(4, 'EMP0004', '박영업', 'sales3@salesboost.co.kr',
+(4, 'EMP0004', '박영업', 'park.sales@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'sales', 2, 3, 'active', NOW(), NOW()),
-(5, 'EMP0005', '최영업', 'sales4@salesboost.co.kr',
+(5, 'EMP0005', '최영업', 'choi.sales@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'sales', 2, 2, 'active', NOW(), NOW()),
 -- 생산부
-(6, 'EMP0006', '김생산', 'prod1@salesboost.co.kr',
+(6, 'EMP0006', '김생산', 'kim.prod@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'production', 3, 5, 'active', NOW(), NOW()),
-(7, 'EMP0007', '이생산', 'prod2@salesboost.co.kr',
+(7, 'EMP0007', '최생산', 'choi.prod@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'production', 3, 3, 'active', NOW(), NOW()),
-(8, 'EMP0008', '박생산', 'prod3@salesboost.co.kr',
+(8, 'EMP0008', '박생산', 'park.prod@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'production', 4, 2, 'active', NOW(), NOW()),
 -- 출하부
-(9,  'EMP0009', '김출하', 'ship1@salesboost.co.kr',
+(9,  'EMP0009', '정출하', 'jung.ship@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'shipping', 5, 5, 'active', NOW(), NOW()),
-(10, 'EMP0010', '이출하', 'ship2@salesboost.co.kr',
+(10, 'EMP0010', '이출하', 'lee.ship@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'shipping', 5, 3, 'active', NOW(), NOW()),
-(11, 'EMP0011', '박출하', 'ship3@salesboost.co.kr',
+(11, 'EMP0011', '박출하', 'park.ship@hanwha.com',
  '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQRJqZvr4V.0w9CZu0xmOxSWJQ7C',
  'shipping', 6, 2, 'active', NOW(), NOW());
 
@@ -274,10 +274,10 @@ INSERT INTO packing_lists (pl_id, pl_code, po_id, pl_invoice_date, client_id, pl
 -- ============================================================
 INSERT INTO production_orders (production_order_id, production_order_code, po_id, production_issue_date, client_id, manager_id, production_status, production_due_date, production_client_name, production_country, production_manager_name, production_item_name, created_at, updated_at) VALUES
 (1, 'PRD2025001', 1, '2025-03-20', 1, 6, 'completed',  '2025-04-05', 'Acme Global Inc.',   'United States', '김생산', 'Office Desk A1 외 3건', NOW(), NOW()),
-(2, 'PRD2025002', 2, '2025-03-25', 2, 7, 'in_progress','2025-04-10', 'Tokyo Trading Co.',  'Japan',         '이생산', 'Meeting Table D4 외 1건', NOW(), NOW());
+(2, 'PRD2025002', 2, '2025-03-25', 2, 7, 'in_progress','2025-04-10', 'Tokyo Trading Co.',  'Japan',         '최생산', 'Meeting Table D4 외 1건', NOW(), NOW());
 
 INSERT INTO shipment_orders (shipment_order_id, shipment_order_code, po_id, shipment_issue_date, client_id, manager_id, shipment_status, shipment_due_date, shipment_client_name, shipment_country, shipment_manager_name, shipment_item_name, created_at, updated_at) VALUES
-(1, 'SH2025001', 1, '2025-04-06', 1, 9,  'completed', '2025-04-15', 'Acme Global Inc.',  'United States', '김출하', 'Office Desk A1 외 3건', NOW(), NOW()),
+(1, 'SH2025001', 1, '2025-04-06', 1, 9,  'completed', '2025-04-15', 'Acme Global Inc.',  'United States', '정출하', 'Office Desk A1 외 3건', NOW(), NOW()),
 (2, 'SH2025002', 2, '2025-04-11', 2, 10, 'preparing', '2025-04-20', 'Tokyo Trading Co.', 'Japan',         '이출하', 'Meeting Table D4 외 1건', NOW(), NOW());
 
 -- ============================================================
