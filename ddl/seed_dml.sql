@@ -6,40 +6,18 @@
 -- 활동: activities / contacts / email_logs / activity_packages
 -- ============================================================
 
--- 기존 데이터 제거 (FK 역순)
-DELETE FROM activity_package_items;
-DELETE FROM activity_package_viewers;
-DELETE FROM activity_packages;
-DELETE FROM email_log_attachments;
-DELETE FROM email_log_types;
-DELETE FROM email_logs;
-DELETE FROM contacts;
-DELETE FROM activities;
-DELETE FROM shipments;
-DELETE FROM collections;
-DELETE FROM approval_requests;
-DELETE FROM shipment_orders;
-DELETE FROM production_orders;
-DELETE FROM packing_lists;
-DELETE FROM commercial_invoices;
-DELETE FROM po_items;
-DELETE FROM purchase_orders;
-DELETE FROM pi_items;
-DELETE FROM proforma_invoices;
-DELETE FROM buyers;
-DELETE FROM items;
-DELETE FROM clients;
-DELETE FROM payment_terms;
-DELETE FROM ports;
-DELETE FROM currencies;
-DELETE FROM incoterms;
-DELETE FROM countries;
+-- ============================================================
+-- [DB 1/4] team2_auth — company / positions / departments / teams / users
+-- ============================================================
+USE team2_auth;
+SET FOREIGN_KEY_CHECKS = 0;
 DELETE FROM refresh_tokens;
 DELETE FROM company;
 DELETE FROM users;
 DELETE FROM teams;
 DELETE FROM departments;
 DELETE FROM positions;
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- 1. 자사정보 (company)
@@ -127,6 +105,21 @@ INSERT INTO users (user_id, employee_no, user_name, user_email, user_pw, user_ro
 (11, '26030303', '박출하', 'park.ship@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
  'shipping', 6, 2, 'active', NOW(), NOW());
+
+-- ============================================================
+-- [DB 2/4] team2_master — countries / incoterms / currencies / ports / payment_terms / clients / buyers / items
+-- ============================================================
+USE team2_master;
+SET FOREIGN_KEY_CHECKS = 0;
+DELETE FROM buyers;
+DELETE FROM items;
+DELETE FROM clients;
+DELETE FROM payment_terms;
+DELETE FROM ports;
+DELETE FROM currencies;
+DELETE FROM incoterms;
+DELETE FROM countries;
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- 6. 마스터 기준정보
@@ -217,6 +210,24 @@ INSERT INTO items (item_id, item_code, item_name, item_name_kr, item_spec, item_
 (5, 'ITM0005', 'Filing Cabinet E5','서류함 E5',        '800 × 450 × 1320 mm',   800, 450, 1320, 'EA',   'CTN', 180.00, 35.000, '940320', '가구', 'active', '2025-02-01', NOW(), NOW());
 
 -- ============================================================
+-- [DB 3/4] team2_docs — PI / PO / CI / PL / production_orders / shipment_orders / collections / shipments / approval_requests
+-- ============================================================
+USE team2_docs;
+SET FOREIGN_KEY_CHECKS = 0;
+DELETE FROM shipments;
+DELETE FROM collections;
+DELETE FROM approval_requests;
+DELETE FROM shipment_orders;
+DELETE FROM production_orders;
+DELETE FROM packing_lists;
+DELETE FROM commercial_invoices;
+DELETE FROM po_items;
+DELETE FROM purchase_orders;
+DELETE FROM pi_items;
+DELETE FROM proforma_invoices;
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================================
 -- 10. PI — 견적송장
 -- ============================================================
 INSERT INTO proforma_invoices (pi_id, pi_code, pi_issue_date, client_id, currency_id, manager_id, pi_status, pi_delivery_date, pi_incoterms_code, pi_named_place, pi_total_amount, pi_client_name, pi_client_address, pi_country, pi_currency_code, pi_manager_name, created_at, updated_at) VALUES
@@ -298,6 +309,21 @@ INSERT INTO approval_requests (approval_request_id, approval_document_type, appr
 (1, 'PI', 'PI250001', 'registration', 2, 1, 'Acme PI 등록 승인 요청', 'approved', '2025-03-01 10:00:00', '2025-03-01 14:00:00'),
 (2, 'PO', 'PO250001', 'registration', 2, 1, 'Acme PO 등록 승인 요청', 'approved', '2025-03-15 10:00:00', '2025-03-15 15:00:00'),
 (3, 'PI', 'PI250003', 'registration', 4, 1, 'Shanghai PI 등록 승인 요청', 'pending',  '2025-03-10 11:00:00', NULL);
+
+-- ============================================================
+-- [DB 4/4] team2_activity — activities / contacts / email_logs / activity_packages
+-- ============================================================
+USE team2_activity;
+SET FOREIGN_KEY_CHECKS = 0;
+DELETE FROM activity_package_items;
+DELETE FROM activity_package_viewers;
+DELETE FROM activity_packages;
+DELETE FROM email_log_attachments;
+DELETE FROM email_log_types;
+DELETE FROM email_logs;
+DELETE FROM contacts;
+DELETE FROM activities;
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- 16. 활동 (activities) — 기록
