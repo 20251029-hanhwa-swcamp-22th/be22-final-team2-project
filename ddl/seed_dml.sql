@@ -240,10 +240,12 @@ INSERT INTO pi_items (pi_item_id, pi_id, item_id, pi_item_name, pi_item_qty, pi_
 -- ============================================================
 -- 11. PO — 발주서
 -- ============================================================
-INSERT INTO purchase_orders (po_id, po_code, pi_id, po_issue_date, client_id, currency_id, manager_id, po_status, po_delivery_date, po_incoterms_code, po_named_place, po_total_amount, po_client_name, po_client_address, po_country, po_currency_code, po_manager_name, created_at, updated_at) VALUES
-(1, 'PO2025001', 1, '2025-03-15', 1, 2, 2, 'confirmed', '2025-04-15', 'FOB', 'Busan Port',
+-- pi_id 는 VARCHAR(30) 으로 proforma_invoices.pi_code 를 참조 (fk_po_pi → pi_code).
+-- po_delivery_date_override NOT NULL 필수.
+INSERT INTO purchase_orders (po_id, po_code, pi_id, po_issue_date, client_id, currency_id, manager_id, po_status, po_delivery_date, po_incoterms_code, po_named_place, po_delivery_date_override, po_total_amount, po_client_name, po_client_address, po_country, po_currency_code, po_manager_name, created_at, updated_at) VALUES
+(1, 'PO2025001', 'PI2025001', '2025-03-15', 1, 2, 2, 'confirmed', '2025-04-15', 'FOB', 'Busan Port', FALSE,
  15000.00, 'Acme Global Inc.', '100 Sunset Blvd, Los Angeles, CA 90028, USA', 'United States', 'USD', '김영업', NOW(), NOW()),
-(2, 'PO2025002', 2, '2025-03-20', 2, 3, 3, 'confirmed', '2025-04-20', 'CIF', 'Tokyo Port',
+(2, 'PO2025002', 'PI2025002', '2025-03-20', 2, 3, 3, 'confirmed', '2025-04-20', 'CIF', 'Tokyo Port', FALSE,
  510000.00, 'Tokyo Trading Co.', '2-1 Marunouchi, Chiyoda-ku, Tokyo, Japan', 'Japan', 'JPY', '이영업', NOW(), NOW());
 
 INSERT INTO po_items (po_item_id, po_id, item_id, po_item_name, po_item_qty, po_item_unit, po_item_unit_price, po_item_amount, po_item_remark) VALUES
@@ -311,23 +313,25 @@ INSERT INTO activities (activity_id, client_id, po_id, activity_author_id, activ
 -- ============================================================
 -- 17. 컨택리스트 (contacts) — 바이어와 연동 (영업 담당자별)
 -- ============================================================
-INSERT INTO contacts (contact_id, client_id, writer_id, contact_name, contact_position, contact_email, contact_tel, created_at, updated_at) VALUES
+-- contacts 는 cross-DB FK 금지 원칙으로 client_id 컬럼 제거됨 (루트@0790ca5).
+-- writer 기준 개인 컨택. 바이어와 연결은 이메일 중복/동일명 등으로 느슨하게 유지.
+INSERT INTO contacts (contact_id, writer_id, contact_name, contact_position, contact_email, contact_tel, created_at, updated_at) VALUES
 -- Acme (영업1팀 담당) — 담당자 2, 3
-(1, 1, 2, 'John Smith',    '팀장', 'john.smith@acme-global.com', '+1-213-555-0101', NOW(), NOW()),
-(2, 1, 2, 'Mary Johnson',  '팀원', 'mary.j@acme-global.com',     '+1-213-555-0102', NOW(), NOW()),
-(3, 1, 3, 'John Smith',    '팀장', 'john.smith@acme-global.com', '+1-213-555-0101', NOW(), NOW()),
-(4, 1, 3, 'Mary Johnson',  '팀원', 'mary.j@acme-global.com',     '+1-213-555-0102', NOW(), NOW()),
+(1, 2, 'John Smith',    '팀장', 'john.smith@acme-global.com', '+1-213-555-0101', NOW(), NOW()),
+(2, 2, 'Mary Johnson',  '팀원', 'mary.j@acme-global.com',     '+1-213-555-0102', NOW(), NOW()),
+(3, 3, 'John Smith',    '팀장', 'john.smith@acme-global.com', '+1-213-555-0101', NOW(), NOW()),
+(4, 3, 'Mary Johnson',  '팀원', 'mary.j@acme-global.com',     '+1-213-555-0102', NOW(), NOW()),
 -- Tokyo Trading (영업1팀) — 담당자 2, 3
-(5, 2, 2, '타나카 히로시', '팀장', 'tanaka@tokyo-trading.co.jp', '+81-3-5555-0201', NOW(), NOW()),
-(6, 2, 2, '사토 유키',     '팀원', 'sato@tokyo-trading.co.jp',   '+81-3-5555-0202', NOW(), NOW()),
-(7, 2, 3, '타나카 히로시', '팀장', 'tanaka@tokyo-trading.co.jp', '+81-3-5555-0201', NOW(), NOW()),
-(8, 2, 3, '사토 유키',     '팀원', 'sato@tokyo-trading.co.jp',   '+81-3-5555-0202', NOW(), NOW()),
+(5, 2, '타나카 히로시', '팀장', 'tanaka@tokyo-trading.co.jp', '+81-3-5555-0201', NOW(), NOW()),
+(6, 2, '사토 유키',     '팀원', 'sato@tokyo-trading.co.jp',   '+81-3-5555-0202', NOW(), NOW()),
+(7, 3, '타나카 히로시', '팀장', 'tanaka@tokyo-trading.co.jp', '+81-3-5555-0201', NOW(), NOW()),
+(8, 3, '사토 유키',     '팀원', 'sato@tokyo-trading.co.jp',   '+81-3-5555-0202', NOW(), NOW()),
 -- Shanghai (영업2팀) — 담당자 4, 5
-(9,  3, 4, '王 伟', '팀장', 'wang.wei@shanghai-imp.cn', '+86-21-5555-0301', NOW(), NOW()),
-(10, 3, 5, '王 伟', '팀장', 'wang.wei@shanghai-imp.cn', '+86-21-5555-0301', NOW(), NOW()),
+(9,  4, '王 伟', '팀장', 'wang.wei@shanghai-imp.cn', '+86-21-5555-0301', NOW(), NOW()),
+(10, 5, '王 伟', '팀장', 'wang.wei@shanghai-imp.cn', '+86-21-5555-0301', NOW(), NOW()),
 -- Berlin (영업2팀) — 담당자 4, 5
-(11, 4, 4, 'Hans Müller', '팀장', 'hans.m@berlin-trade.de', '+49-40-5555-0401', NOW(), NOW()),
-(12, 4, 5, 'Hans Müller', '팀장', 'hans.m@berlin-trade.de', '+49-40-5555-0401', NOW(), NOW());
+(11, 4, 'Hans Müller', '팀장', 'hans.m@berlin-trade.de', '+49-40-5555-0401', NOW(), NOW()),
+(12, 5, 'Hans Müller', '팀장', 'hans.m@berlin-trade.de', '+49-40-5555-0401', NOW(), NOW());
 
 -- ============================================================
 -- 18. 이메일 발송 이력
