@@ -32,14 +32,16 @@ INSERT INTO company (company_id, company_name, company_address_en, company_addre
 -- ============================================================
 -- 2. 직급 (positions)
 -- ============================================================
+-- position_level 관례: 1 = 팀장/결재 권한 보유 (부장·이사·대표이사).
+-- Position.hasApprovalAuthority() / PositionLevel.MANAGER / findApprovers 가 level=1 기준.
 INSERT INTO positions (position_id, position_name, position_level, created_at) VALUES
-(1, '사원',   1, NOW()),
-(2, '대리',   2, NOW()),
-(3, '과장',   3, NOW()),
-(4, '차장',   4, NOW()),
-(5, '부장',   5, NOW()),
-(6, '이사',   6, NOW()),
-(7, '대표이사', 7, NOW());
+(1, '사원',     5, NOW()),
+(2, '대리',     4, NOW()),
+(3, '과장',     3, NOW()),
+(4, '차장',     2, NOW()),
+(5, '부장',     1, NOW()),
+(6, '이사',     1, NOW()),
+(7, '대표이사', 1, NOW());
 
 -- ============================================================
 -- 3. 부서 (departments)
@@ -72,30 +74,30 @@ INSERT INTO users (user_id, employee_no, user_name, user_email, user_pw, user_ro
 (1, '26030101', '최관리', 'admin@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
  'admin', 7, 7, 'active', NOW(), NOW()),
--- 영업부
+-- 영업부 — 영업1팀 팀장: 이영업(부장, pos 5 → level 1), 영업2팀 팀장: 최영업(부장)
 (2, '26030102', '김영업', 'kim.sales@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'sales', 1, 5, 'active', NOW(), NOW()),
+ 'sales', 1, 3, 'active', NOW(), NOW()),
 (3, '26030103', '이영업', 'lee.sales@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'sales', 1, 3, 'active', NOW(), NOW()),
+ 'sales', 1, 5, 'active', NOW(), NOW()),
 (4, '26030104', '박영업', 'park.sales@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
  'sales', 2, 3, 'active', NOW(), NOW()),
 (5, '26030105', '최영업', 'choi.sales@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'sales', 2, 2, 'active', NOW(), NOW()),
--- 생산부
+ 'sales', 2, 5, 'active', NOW(), NOW()),
+-- 생산부 — 생산1팀 팀장: 최생산(부장), 생산2팀 팀장: 박생산(부장)
 (6, '26030201', '김생산', 'kim.prod@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'production', 3, 5, 'active', NOW(), NOW()),
+ 'production', 3, 3, 'active', NOW(), NOW()),
 (7, '26030202', '최생산', 'choi.prod@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'production', 3, 3, 'active', NOW(), NOW()),
+ 'production', 3, 5, 'active', NOW(), NOW()),
 (8, '26030203', '박생산', 'park.prod@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'production', 4, 2, 'active', NOW(), NOW()),
--- 출하부
+ 'production', 4, 5, 'active', NOW(), NOW()),
+-- 출하부 — 출하1팀 팀장: 정출하(부장), 출하2팀 팀장: 박출하(부장)
 (9,  '26030301', '정출하', 'jung.ship@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
  'shipping', 5, 5, 'active', NOW(), NOW()),
@@ -104,7 +106,7 @@ INSERT INTO users (user_id, employee_no, user_name, user_email, user_pw, user_ro
  'shipping', 5, 3, 'active', NOW(), NOW()),
 (11, '26030303', '박출하', 'park.ship@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'shipping', 6, 2, 'active', NOW(), NOW());
+ 'shipping', 6, 5, 'active', NOW(), NOW());
 
 -- ============================================================
 -- [DB 2/4] team2_master — countries / incoterms / currencies / ports / payment_terms / clients / buyers / items
@@ -270,15 +272,29 @@ INSERT INTO po_items (po_item_id, po_id, item_id, po_item_name, po_item_qty, po_
 -- ============================================================
 -- 12. CI / PL — 상업송장 / 포장명세서
 -- ============================================================
-INSERT INTO commercial_invoices (ci_id, ci_code, po_id, ci_invoice_date, client_id, currency_id, ci_total_amount, ci_status, ci_client_name, ci_client_address, ci_country, ci_currency_code, ci_payment_terms, ci_port_of_discharge, ci_buyer, created_at) VALUES
+INSERT INTO commercial_invoices (ci_id, ci_code, po_id, ci_invoice_date, client_id, currency_id, ci_total_amount, ci_status, ci_client_name, ci_client_address, ci_country, ci_currency_code, ci_payment_terms, ci_port_of_discharge, ci_buyer, ci_items_snapshot, created_at) VALUES
 (1, 'CI250001', 1, '2025-04-10', 1, 2, 15000.00, 'issued',
  'Acme Global Inc.', '100 Sunset Blvd, Los Angeles, CA 90028, USA', 'United States', 'USD',
- 'T/T 30 days', 'Los Angeles', 'John Smith', NOW());
+ 'T/T 30 days', 'Los Angeles', 'John Smith',
+ JSON_ARRAY(
+   JSON_OBJECT('itemName','Office Desk A1',  'quantity',50, 'unit','EA', 'unitPrice',150.00, 'amount',7500.00),
+   JSON_OBJECT('itemName','Office Chair B2', 'quantity',50, 'unit','EA', 'unitPrice',85.00,  'amount',4250.00),
+   JSON_OBJECT('itemName','Bookshelf C3',    'quantity',25, 'unit','EA', 'unitPrice',120.00, 'amount',3000.00),
+   JSON_OBJECT('itemName','Filing Cabinet E5','quantity',1, 'unit','EA', 'unitPrice',180.00, 'amount',250.00)
+ ),
+ NOW());
 
-INSERT INTO packing_lists (pl_id, pl_code, po_id, pl_invoice_date, client_id, pl_gross_weight, pl_status, pl_client_name, pl_client_address, pl_country, pl_payment_terms, pl_port_of_discharge, pl_buyer, created_at) VALUES
+INSERT INTO packing_lists (pl_id, pl_code, po_id, pl_invoice_date, client_id, pl_gross_weight, pl_status, pl_client_name, pl_client_address, pl_country, pl_payment_terms, pl_port_of_discharge, pl_buyer, pl_items_snapshot, created_at) VALUES
 (1, 'PL250001', 1, '2025-04-10', 1, 2485.00, 'issued',
  'Acme Global Inc.', '100 Sunset Blvd, Los Angeles, CA 90028, USA', 'United States',
- 'T/T 30 days', 'Los Angeles', 'John Smith', NOW());
+ 'T/T 30 days', 'Los Angeles', 'John Smith',
+ JSON_ARRAY(
+   JSON_OBJECT('itemName','Office Desk A1',   'quantity',50, 'netWeight',25.5, 'grossWeight',27.0, 'measurement',0.65),
+   JSON_OBJECT('itemName','Office Chair B2',  'quantity',50, 'netWeight',12.3, 'grossWeight',13.5, 'measurement',0.42),
+   JSON_OBJECT('itemName','Bookshelf C3',     'quantity',25, 'netWeight',30.0, 'grossWeight',32.0, 'measurement',0.48),
+   JSON_OBJECT('itemName','Filing Cabinet E5','quantity',1,  'netWeight',35.0, 'grossWeight',37.0, 'measurement',0.48)
+ ),
+ NOW());
 
 -- ============================================================
 -- 13. 생산지시서 / 출하지시서
