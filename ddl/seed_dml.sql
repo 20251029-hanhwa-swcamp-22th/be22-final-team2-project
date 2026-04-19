@@ -32,16 +32,12 @@ INSERT INTO company (company_id, company_name, company_address_en, company_addre
 -- ============================================================
 -- 2. 직급 (positions)
 -- ============================================================
--- position_level 관례: 1 = 팀장/결재 권한 보유 (부장·이사·대표이사).
+-- 정책 단순화: 직급은 팀장/팀원 두 개만 유지.
+-- position_level 관례: 1 = 팀장(결재 권한), 3 = 팀원(일반 STAFF).
 -- Position.hasApprovalAuthority() / PositionLevel.MANAGER / findApprovers 가 level=1 기준.
 INSERT INTO positions (position_id, position_name, position_level, created_at) VALUES
-(1, '사원',     5, NOW()),
-(2, '대리',     4, NOW()),
-(3, '과장',     3, NOW()),
-(4, '차장',     2, NOW()),
-(5, '부장',     1, NOW()),
-(6, '이사',     1, NOW()),
-(7, '대표이사', 1, NOW());
+(1, '팀장', 1, NOW()),
+(2, '팀원', 3, NOW());
 
 -- ============================================================
 -- 3. 부서 (departments)
@@ -69,44 +65,45 @@ INSERT INTO teams (team_id, team_name, department_id, created_at) VALUES
 -- 5. 사용자 (users) — team_id 로 조직 결정
 --    user_pw: bcrypt of 'password123'
 -- ============================================================
+-- 직급 단순화: 팀장(1) / 팀원(2). 기존 lvl1(부장·이사·대표이사) 은 모두 팀장(1)로, 나머지는 팀원(2)로 매핑.
 INSERT INTO users (user_id, employee_no, user_name, user_email, user_pw, user_role, team_id, position_id, user_status, created_at, updated_at) VALUES
 -- admin
 (1, '26030101', '최관리', 'admin@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'admin', 7, 7, 'active', NOW(), NOW()),
--- 영업부 — 영업1팀 팀장: 이영업(부장, pos 5 → level 1), 영업2팀 팀장: 최영업(부장)
+ 'admin', 7, 1, 'active', NOW(), NOW()),
+-- 영업부 — 영업1팀 팀장: 이영업, 영업2팀 팀장: 최영업
 (2, '26030102', '김영업', 'kim.sales@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'sales', 1, 3, 'active', NOW(), NOW()),
+ 'sales', 1, 2, 'active', NOW(), NOW()),
 (3, '26030103', '이영업', 'lee.sales@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'sales', 1, 5, 'active', NOW(), NOW()),
+ 'sales', 1, 1, 'active', NOW(), NOW()),
 (4, '26030104', '박영업', 'park.sales@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'sales', 2, 3, 'active', NOW(), NOW()),
+ 'sales', 2, 2, 'active', NOW(), NOW()),
 (5, '26030105', '최영업', 'choi.sales@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'sales', 2, 5, 'active', NOW(), NOW()),
--- 생산부 — 생산1팀 팀장: 최생산(부장), 생산2팀 팀장: 박생산(부장)
+ 'sales', 2, 1, 'active', NOW(), NOW()),
+-- 생산부 — 생산1팀 팀장: 최생산, 생산2팀 팀장: 박생산
 (6, '26030201', '김생산', 'kim.prod@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'production', 3, 3, 'active', NOW(), NOW()),
+ 'production', 3, 2, 'active', NOW(), NOW()),
 (7, '26030202', '최생산', 'choi.prod@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'production', 3, 5, 'active', NOW(), NOW()),
+ 'production', 3, 1, 'active', NOW(), NOW()),
 (8, '26030203', '박생산', 'park.prod@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'production', 4, 5, 'active', NOW(), NOW()),
--- 출하부 — 출하1팀 팀장: 정출하(부장), 출하2팀 팀장: 박출하(부장)
+ 'production', 4, 1, 'active', NOW(), NOW()),
+-- 출하부 — 출하1팀 팀장: 정출하, 출하2팀 팀장: 박출하
 (9,  '26030301', '정출하', 'jung.ship@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'shipping', 5, 5, 'active', NOW(), NOW()),
+ 'shipping', 5, 1, 'active', NOW(), NOW()),
 (10, '26030302', '이출하', 'lee.ship@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'shipping', 5, 3, 'active', NOW(), NOW()),
+ 'shipping', 5, 2, 'active', NOW(), NOW()),
 (11, '26030303', '박출하', 'park.ship@hanwha.com',
  '$2a$10$D9NYuK6QaSwPFM0fnBN9gOHr8.xWmZyimaUxJUt7yiw69nDyQErXm',
- 'shipping', 6, 5, 'active', NOW(), NOW());
+ 'shipping', 6, 1, 'active', NOW(), NOW());
 
 -- ============================================================
 -- [DB 2/4] team2_master — countries / incoterms / currencies / ports / payment_terms / clients / buyers / items
