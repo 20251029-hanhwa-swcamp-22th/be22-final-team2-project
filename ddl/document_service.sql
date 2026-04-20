@@ -197,6 +197,7 @@ CREATE TABLE po_items (
     po_item_unit_price DECIMAL(15,2) NOT NULL DEFAULT 0,
     po_item_amount  DECIMAL(15,2)  NOT NULL DEFAULT 0,
     po_item_remark  TEXT           NULL,
+    po_item_weight  DECIMAL(10,3)  NULL COMMENT '개당 중량 kg (master.items.item_weight 스냅샷) — PL 총중량 집계 소스 (Issue D)',
 
     PRIMARY KEY (po_item_id),
     INDEX idx_po_items_po_id (po_id),

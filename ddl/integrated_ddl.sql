@@ -284,6 +284,8 @@ CREATE TABLE po_items (
     po_item_unit_price DECIMAL(15,2) NOT NULL DEFAULT 0,
     po_item_amount DECIMAL(15,2) NOT NULL DEFAULT 0,
     po_item_remark TEXT,
+    -- 개당 중량 kg (Issue D — PL 총중량 집계 소스)
+    po_item_weight DECIMAL(10,3),
     PRIMARY KEY (po_item_id)
 );
 
