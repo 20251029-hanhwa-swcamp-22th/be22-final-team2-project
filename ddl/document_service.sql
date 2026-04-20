@@ -65,6 +65,9 @@ CREATE TABLE proforma_invoices (
     pi_linked_documents      JSON          NULL COMMENT '연결 문서 목록 [{id, type, status}]',
     pi_revision_history      JSON          NULL COMMENT '변경 이력',
 
+    -- PI 작성 모달 "특기사항(reason)" 자유 텍스트. ddl-auto=update 로 자동 추가됨.
+    pi_remarks               TEXT          NULL COMMENT '특기사항 (자유 텍스트)',
+
     created_at              TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at              TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -76,6 +79,11 @@ CREATE TABLE proforma_invoices (
     INDEX idx_pi_manager_id (manager_id),
     INDEX idx_pi_approval_status (pi_approval_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 통화 정책:
+--   pi_items.pi_item_unit_price / pi_item_amount / pi_total_amount 은 모두
+--   거래처 통화(pi_currency_code) 기준으로 저장된다. 생성 시 ExchangeRateService
+--   .convertFromKrw() 로 KRW→외화 변환 후 persist. 환율값 자체는 저장하지 않는다.
 
 -- ------------------------------------------------------------
 -- 2. pi_items (PI 품목)
@@ -117,6 +125,10 @@ CREATE TABLE purchase_orders (
     po_named_place              VARCHAR(200)    NULL,
     po_source_delivery_date     DATE            NULL,
     po_delivery_date_override   BOOLEAN         NOT NULL DEFAULT FALSE,
+    -- po_total_amount 와 po_items.po_item_unit_price / po_item_amount 는 모두
+    -- 거래처 통화(po_currency_code) 기준으로 저장된다. PI → PO 전이 시 PI 가 이미
+    -- 외화로 변환해 둔 값을 그대로 승계하며, PO 는 별도 KRW→외화 재변환을 하지 않는다.
+    -- CI / PL / Collection 은 모두 이 값을 참조하므로 단일 소스로 유지된다.
     po_total_amount             DECIMAL(15,2)   NOT NULL DEFAULT 0,
 
     -- 스냅샷 (화면 표시용)
@@ -138,6 +150,17 @@ CREATE TABLE purchase_orders (
     po_items_snapshot            JSON          NULL COMMENT '품목 스냅샷 (PDF/상세용)',
     po_linked_documents          JSON          NULL COMMENT '연결 문서 목록 [{id, type, status}]',
     po_revision_history          JSON          NULL COMMENT '변경 이력',
+
+    -- PO 작성 모달 "특기사항(reason)" 자유 텍스트. ddl-auto=update 로 자동 추가됨.
+    po_remarks                   TEXT          NULL COMMENT '특기사항 (자유 텍스트)',
+
+    -- Step C — PO 등록 시점에 후속 흐름 분기 + 담당자.
+    --   po_production_route: 'PRODUCTION'(생산 경유) | 'DIRECT'(직출하). NULL=DIRECT 로 해석.
+    --   po_production_assignee_id: PRODUCTION 경로 선택 시 MO 담당자 userId.
+    --   po_shipping_assignee_id: ShipmentOrder.managerId 로 전이될 출하 담당자 userId.
+    po_production_route          VARCHAR(20)   NULL COMMENT 'PRODUCTION | DIRECT',
+    po_production_assignee_id    BIGINT        NULL COMMENT '생산(MO) 담당자 userId',
+    po_shipping_assignee_id      BIGINT        NULL COMMENT '출하(SO) 담당자 userId',
 
     created_at                  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at                  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -256,6 +279,9 @@ CREATE TABLE production_orders (
     production_manager_name  VARCHAR(100)    NULL,
     production_item_name     VARCHAR(200)    NULL,
     production_linked_documents JSON         NULL COMMENT '연결 문서 목록 [{id, type, status}]',
+    -- MO 전용 items 테이블이 없어 PO 품목 스냅샷을 그대로 저장한다. ddl-auto=update 로 자동 추가.
+    -- JSON 배열 [{itemName, quantity, unit, unitPrice, amount, remark}].
+    production_items_snapshot TEXT          NULL COMMENT 'PO 전이 품목 스냅샷 (외화 통화 기준)',
 
     created_at               TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at               TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

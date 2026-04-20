@@ -207,6 +207,8 @@ CREATE TABLE proforma_invoices (
     pi_items_snapshot JSON,
     pi_linked_documents JSON,
     pi_revision_history JSON,
+    -- PI 특기사항 (자유 텍스트). pi_items.pi_item_unit_price 는 거래처 통화 기준으로 저장.
+    pi_remarks TEXT,
     created_at DATETIME,
     updated_at DATETIME,
     PRIMARY KEY (pi_id),
@@ -256,6 +258,12 @@ CREATE TABLE purchase_orders (
     po_items_snapshot JSON,
     po_linked_documents JSON,
     po_revision_history JSON,
+    -- PO 특기사항 및 Step C 후속 흐름 분기(담당자). 통화 정책: po_total_amount /
+    -- po_items.po_item_unit_price / po_item_amount 모두 거래처 통화 기준으로 저장한다.
+    po_remarks TEXT,
+    po_production_route VARCHAR(20),
+    po_production_assignee_id BIGINT,
+    po_shipping_assignee_id BIGINT,
     created_at DATETIME,
     updated_at DATETIME,
     PRIMARY KEY (po_id),
@@ -333,6 +341,8 @@ CREATE TABLE production_orders (
     production_manager_name VARCHAR(100),
     production_item_name VARCHAR(200),
     production_linked_documents JSON,
+    -- PO 품목 스냅샷 JSON(거래처 통화 기준). MO 전용 items 테이블이 없어 PO 에서 전이된 스냅샷을 그대로 보관.
+    production_items_snapshot TEXT,
     created_at DATETIME,
     updated_at DATETIME,
     PRIMARY KEY (production_order_id),
