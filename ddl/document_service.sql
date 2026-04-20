@@ -68,6 +68,9 @@ CREATE TABLE proforma_invoices (
     -- PI 작성 모달 "특기사항(reason)" 자유 텍스트. ddl-auto=update 로 자동 추가됨.
     pi_remarks               TEXT          NULL COMMENT '특기사항 (자유 텍스트)',
 
+    -- 거래처 바이어(PIC) 이름 스냅샷. PIFormModal 의 바이어 드롭다운 선택값 (Issue C).
+    pi_buyer_name            VARCHAR(200)  NULL COMMENT '바이어 이름 (PIC)',
+
     created_at              TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at              TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -161,6 +164,9 @@ CREATE TABLE purchase_orders (
     po_production_route          VARCHAR(20)   NULL COMMENT 'PRODUCTION | DIRECT',
     po_production_assignee_id    BIGINT        NULL COMMENT '생산(MO) 담당자 userId',
     po_shipping_assignee_id      BIGINT        NULL COMMENT '출하(SO) 담당자 userId',
+
+    -- 거래처 바이어(PIC) 이름 스냅샷. PI → PO 전이 시 PI.buyerName 승계 (Issue C).
+    po_buyer_name                VARCHAR(200)  NULL COMMENT '바이어 이름 (PIC)',
 
     created_at                  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at                  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

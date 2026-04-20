@@ -209,6 +209,8 @@ CREATE TABLE proforma_invoices (
     pi_revision_history JSON,
     -- PI 특기사항 (자유 텍스트). pi_items.pi_item_unit_price 는 거래처 통화 기준으로 저장.
     pi_remarks TEXT,
+    -- 바이어 이름 (PIC) 스냅샷. PI → PO → CI/PL 로 전이.
+    pi_buyer_name VARCHAR(200),
     created_at DATETIME,
     updated_at DATETIME,
     PRIMARY KEY (pi_id),
@@ -264,6 +266,8 @@ CREATE TABLE purchase_orders (
     po_production_route VARCHAR(20),
     po_production_assignee_id BIGINT,
     po_shipping_assignee_id BIGINT,
+    -- 바이어 이름 (PIC) 스냅샷. PI 에서 승계.
+    po_buyer_name VARCHAR(200),
     created_at DATETIME,
     updated_at DATETIME,
     PRIMARY KEY (po_id),
