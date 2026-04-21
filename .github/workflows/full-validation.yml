@@ -26,6 +26,7 @@ jobs:
         working-directory: team2-manifest
         run: |
           bash scripts/generate-rsa-keys.sh -o secrets/jwt
+          chmod 0644 secrets/jwt/private.pem secrets/jwt/public.pem
           ls -lh secrets/jwt/
 
       - name: Docker login GHCR
