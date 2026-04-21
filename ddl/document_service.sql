@@ -12,10 +12,12 @@
 --   - approval_requests: 결재 요청
 --   - collections: 매출·수금 현황
 --   - shipments: 출하현황                    — PK: BIGINT AUTO_INCREMENT (문서번호 없음)
+--   - document_email_outbox: 자동 문서 메일 발송 큐
 -- Engine: InnoDB | Charset: utf8mb4_unicode_ci
 -- ============================================================
 
 -- 의존성 역순으로 DROP
+DROP TABLE IF EXISTS document_email_outbox;
 DROP TABLE IF EXISTS shipments;
 DROP TABLE IF EXISTS collections;
 DROP TABLE IF EXISTS approval_requests;
@@ -407,4 +409,26 @@ CREATE TABLE shipments (
     INDEX idx_shipments_due_date (shipment_due_date),
     CONSTRAINT fk_shipments_po FOREIGN KEY (po_id) REFERENCES purchase_orders (po_id),
     CONSTRAINT fk_shipments_ship_order FOREIGN KEY (shipment_order_id) REFERENCES shipment_orders (shipment_order_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- 12. document_email_outbox (자동 문서 메일 발송 큐)
+-- ------------------------------------------------------------
+CREATE TABLE document_email_outbox (
+    outbox_id       BIGINT       NOT NULL AUTO_INCREMENT,
+    event_type      VARCHAR(50)  NOT NULL,
+    status          VARCHAR(20)  NOT NULL DEFAULT 'PENDING',
+    document_code   VARCHAR(50)  NOT NULL,
+    po_code         VARCHAR(50)  NULL,
+    attempts        INT          NOT NULL DEFAULT 0,
+    max_attempts    INT          NOT NULL DEFAULT 3,
+    next_attempt_at DATETIME(6)  NOT NULL,
+    processed_at    DATETIME(6)  NULL,
+    error_message   TEXT         NULL,
+    created_at      DATETIME(6)  NOT NULL,
+    updated_at      DATETIME(6)  NOT NULL,
+
+    PRIMARY KEY (outbox_id),
+    INDEX idx_document_email_outbox_ready (status, next_attempt_at, created_at),
+    INDEX idx_document_email_outbox_type (event_type, document_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
