@@ -45,9 +45,9 @@ jobs:
       - name: Start services
         working-directory: team2-manifest
         env:
-          MARIADB_ROOT_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          INTERNAL_API_TOKEN: ${{ secrets.INTERNAL_API_TOKEN }}
+          MARIADB_ROOT_PASSWORD: ${{ secrets.TEST_DB_PASSWORD || 'team2-test-db-password' }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD || 'team2-test-mail-password' }}
+          INTERNAL_API_TOKEN: ${{ secrets.INTERNAL_API_TOKEN || 'team2-internal-test-token' }}
           JWT_KEYS_DIR: ./secrets/jwt
         run: docker compose up -d
 
